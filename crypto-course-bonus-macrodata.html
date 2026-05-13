@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRYPTO MIND — Бонус: Макро-данные и рынки</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F0E8;--bg-card:#FFFDF8;--red:#D63031;--red-dark:#B71C1C;--red-light:#FFEBEE;--text:#2D2D2D;--text-light:#5A5A5A;--text-muted:#8A8A8A;--accent-teal:#00897B;--accent-blue:#1565C0;--accent-orange:#F57C00;--accent-purple:#6A1B9A;--border:#E0D8CC;--green:#2E7D32;--green-light:#E8F5E9}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,232,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between}.nav-brand{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;color:var(--red);letter-spacing:3px;text-transform:uppercase}.nav-module{font-size:14px;color:var(--text-muted);font-weight:500}.nav-progress{display:flex;align-items:center;gap:8px}.nav-progress-bar{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}.nav-progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width .5s ease}.nav-progress-text{font-size:12px;color:var(--text-muted);font-weight:600;font-family:'JetBrains Mono',monospace}
+
+.sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:40}.sidebar-overlay.show{display:block}.sidebar{position:fixed;left:0;top:64px;bottom:0;width:300px;background:var(--bg-card);border-right:1px solid var(--border);padding:30px 0;overflow-y:auto;z-index:50;transition:transform .3s ease}.sidebar-section-title{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding:0 24px;margin-bottom:16px}.sidebar-item{display:flex;align-items:flex-start;gap:14px;padding:14px 24px;cursor:pointer;transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;color:inherit}.sidebar-item:hover{background:rgba(214,48,49,.04)}.sidebar-item.active{background:rgba(214,48,49,.06);border-left-color:var(--red)}.sidebar-num{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--text-muted);min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg);flex-shrink:0}.sidebar-item.active .sidebar-num{background:var(--red);color:#fff}.sidebar-item.completed .sidebar-num{background:var(--accent-teal);color:#fff}.sidebar-item-text{font-size:13px;font-weight:500;line-height:1.5}.sidebar-item-text small{display:block;font-size:11px;color:var(--text-muted);font-weight:400;margin-top:2px}
+
+.main{margin-left:300px;padding-top:64px;min-height:100vh}.lesson{display:none;animation:fadeIn .4s ease}.lesson.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.lesson-hero{padding:80px 60px 60px;position:relative;overflow:hidden}.lesson-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:400px;height:400px;background:rgba(255,255,255,.04);border-radius:50%}.lesson-hero .module-tag{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;position:relative;z-index:1}.lesson-hero h1{font-family:'Oswald',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;color:#fff;text-transform:uppercase;line-height:1.1;letter-spacing:-1px;position:relative;z-index:1;max-width:700px}.lesson-hero .lesson-number{font-family:'Oswald',sans-serif;font-size:160px;font-weight:700;color:rgba(255,255,255,.08);position:absolute;right:60px;bottom:-20px;line-height:1}
+
+.lesson-hero.overview{background:linear-gradient(135deg,#1A237E,#283593)}.lesson-hero.fed{background:linear-gradient(135deg,#BF360C,#D84315)}.lesson-hero.onchain{background:linear-gradient(135deg,#1B5E20,#2E7D32)}.lesson-hero.calendar{background:linear-gradient(135deg,#4A148C,#6A1B9A)}.lesson-hero.signals{background:linear-gradient(135deg,#004D40,#00695C)}
+
+.lesson-body{max-width:820px;padding:50px 60px 80px}.lesson-body h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;color:var(--red);text-transform:uppercase;margin:50px 0 20px;letter-spacing:.5px}.lesson-body h2:first-child{margin-top:0}.lesson-body h3{font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;color:var(--text);margin:35px 0 14px}.lesson-body p{font-size:16px;margin-bottom:18px;color:var(--text);line-height:1.8}.lesson-body strong{color:var(--red-dark);font-weight:600}
+
+.analogy{background:linear-gradient(135deg,#FFF8E1,#FFFDE7);border-left:4px solid #FFB300;border-radius:0 12px 12px 0;padding:24px 28px;margin:28px 0;position:relative}.analogy::before{content:'💡';font-size:20px;position:absolute;top:-10px;left:-14px;background:var(--bg);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center}.analogy-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#F57F17;margin-bottom:8px}.analogy p{font-size:15px;color:#5D4037;margin-bottom:0}
+
+.key-point{background:var(--red-light);border-radius:12px;padding:24px 28px;margin:28px 0;border:1px solid rgba(214,48,49,.15)}.key-point-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:8px}.key-point p{font-size:15px;color:var(--red-dark);margin-bottom:0}
+
+.info-block{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;margin:28px 0}.info-block h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:12px;color:var(--text)}.info-block ul{list-style:none;padding:0}.info-block ul li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid var(--border);font-size:15px}.info-block ul li:last-child{border-bottom:none}.info-block ul li::before{content:'→';color:var(--red);font-weight:700;position:absolute;left:0}
+
+.svg-container{margin:32px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;overflow:hidden}.svg-container svg{width:100%;height:auto;display:block}.svg-caption{text-align:center;font-size:13px;color:var(--text-muted);margin-top:12px;font-style:italic}
+
+.summary-box{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border:1px solid #A5D6A7;border-radius:12px;padding:28px;margin:40px 0 28px}.summary-box h3{font-family:'Oswald',sans-serif;font-size:18px;color:#2E7D32;margin:0 0 14px}.summary-box ul{list-style:none;padding:0}.summary-box ul li{padding:6px 0 6px 24px;position:relative;font-size:15px}.summary-box ul li::before{content:'✓';color:#2E7D32;font-weight:700;position:absolute;left:0}
+
+.data-table{width:100%;border-collapse:separate;border-spacing:0;margin:28px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}.data-table thead{background:var(--red)}.data-table th{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;color:#fff;padding:12px 14px;text-transform:uppercase;letter-spacing:.5px;text-align:left}.data-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border);background:var(--bg-card)}.data-table tr:last-child td{border-bottom:none}.data-table .label-cell{font-weight:700;font-size:13px;color:var(--text)}
+
+.lesson-nav{display:flex;justify-content:space-between;gap:16px;padding:40px 0 0;border-top:1px solid var(--border);margin-top:40px}.btn{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;padding:14px 32px;border-radius:8px;border:none;cursor:pointer;transition:all .25s ease;text-transform:uppercase;letter-spacing:1px}.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 4px 20px rgba(214,48,49,.3)}.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg);border-color:var(--text-muted)}
+
+.quiz{background:var(--bg-card);border:2px solid var(--border);border-radius:12px;padding:32px;margin:32px 0}.quiz h4{font-family:'Oswald',sans-serif;font-size:18px;color:var(--red);margin-bottom:6px}.quiz .quiz-question{font-size:16px;color:var(--text);margin-bottom:20px;line-height:1.6;font-weight:500}.quiz-option{display:block;width:100%;text-align:left;background:var(--bg);border:2px solid var(--border);color:var(--text);padding:14px 20px;border-radius:10px;margin-bottom:10px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:15px;line-height:1.5;transition:all .2s ease}.quiz-option:hover{background:#EDE8DD;border-color:var(--text-muted)}.quiz-option.correct{background:#E8F5E9;border-color:#4CAF50;color:#2E7D32;font-weight:600}.quiz-option.wrong{background:#FFEBEE;border-color:#EF5350;color:#C62828}.quiz-feedback{margin-top:16px;font-size:15px;padding:14px 18px;border-radius:10px;display:none;line-height:1.6}.quiz-feedback.show{display:block}.quiz-feedback.correct{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}.quiz-feedback.wrong{background:#FFF3E0;color:#E65100;border:1px solid #FFCC80}
+
+.signal-card{border-radius:12px;padding:24px 28px;margin:16px 0;border:2px solid;position:relative;overflow:hidden}
+.signal-card.long{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-color:#4CAF50}
+.signal-card.short{background:linear-gradient(135deg,#FFEBEE,#FFF0F0);border-color:#EF5350}
+.signal-card.neutral{background:linear-gradient(135deg,#FFF8E1,#FFFDE7);border-color:#FFB300}
+.signal-card .signal-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.signal-card.long .signal-badge{background:#4CAF50;color:#fff}
+.signal-card.short .signal-badge{background:#EF5350;color:#fff}
+.signal-card.neutral .signal-badge{background:#FFB300;color:#fff}
+.signal-card h4{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.signal-card p{font-size:14px;margin-bottom:0;color:var(--text-light)}
+
+.report-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;margin:20px 0;display:grid;grid-template-columns:64px 1fr;gap:20px;align-items:start}
+.report-card .report-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.report-card .report-title{font-family:'Oswald',sans-serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:4px}
+.report-card .report-timing{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:10px}
+.report-card .report-body{font-size:14px;color:var(--text-light);line-height:1.7}
+
+.danger-block{background:#FFEBEE;border:2px solid #EF5350;border-radius:12px;padding:28px;margin:28px 0}.danger-block h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:12px;color:#C62828}.danger-block ul{list-style:none;padding:0}.danger-block ul li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid rgba(239,83,80,.2);font-size:15px;color:#B71C1C}.danger-block ul li:last-child{border-bottom:none}.danger-block ul li::before{content:'⚠️';position:absolute;left:0;font-size:13px}
+
+.step-list{counter-reset:step;margin:28px 0}.step-item{position:relative;padding:20px 20px 20px 72px;margin-bottom:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;counter-increment:step}.step-item::before{content:counter(step);position:absolute;left:20px;top:20px;width:36px;height:36px;background:var(--red);color:#fff;font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center}.step-item h4{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text)}.step-item p{font-size:14px;margin-bottom:0;color:var(--text-light)}
+
+.menu-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);padding:4px}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);width:280px}.sidebar.open{transform:translateX(0);box-shadow:4px 0 30px rgba(0,0,0,.15)}.main{margin-left:0}.lesson-hero{padding:60px 28px 40px}.lesson-body{padding:30px 28px 60px}.menu-toggle{display:block}.report-card{grid-template-columns:1fr}.lesson-hero .lesson-number{font-size:100px;right:20px}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div style="display:flex;align-items:center;gap:16px"><button class="menu-toggle" onclick="toggleSidebar()">☰</button><span class="nav-brand">Crypto Mind</span></div>
+  <span class="nav-module">Бонус — Макро-данные и крипто-рынки</span>
+  <div class="nav-progress"><div class="nav-progress-bar"><div class="nav-progress-fill" id="progressFill" style="width:20%"></div></div><span class="nav-progress-text" id="progressText">1/5</span></div>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section-title">Бонус · Макро-гид</div>
+  <a class="sidebar-item active" data-lesson="1" onclick="goToLesson(1)"><span class="sidebar-num">★</span><span class="sidebar-item-text">Как макро движет крипту<small>Почему биткоин реагирует на ФРС</small></span></a>
+  <a class="sidebar-item" data-lesson="2" onclick="goToLesson(2)"><span class="sidebar-num">★</span><span class="sidebar-item-text">Ключевые отчёты США<small>CPI, NFP, ВВП и решения ФРС</small></span></a>
+  <a class="sidebar-item" data-lesson="3" onclick="goToLesson(3)"><span class="sidebar-num">★</span><span class="sidebar-item-text">Крипто-специфические данные<small>On-chain метрики, доминанция, ликвидации</small></span></a>
+  <a class="sidebar-item" data-lesson="4" onclick="goToLesson(4)"><span class="sidebar-num">★</span><span class="sidebar-item-text">Экономический календарь<small>Когда выходят данные и как готовиться</small></span></a>
+  <a class="sidebar-item" data-lesson="5" onclick="goToLesson(5)"><span class="sidebar-num">★</span><span class="sidebar-item-text">Сигналы: лонг или шорт<small>Чёткие правила для каждой ситуации</small></span></a>
+  <div style="padding:24px;margin-top:20px;border-top:1px solid var(--border)">
+    <div class="sidebar-section-title" style="padding:0;margin-bottom:12px">Все модули</div>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.6">
+      <a href="crypto-course-module1.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М1 · Введение</a>
+      <a href="crypto-course-module2.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М2 · Bitcoin, Ethereum, токены</a>
+      <a href="crypto-course-module3.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М3 · Виды криптоактивов</a>
+      <a href="crypto-course-module4.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М4 · Рынок и биржи</a>
+      <a href="crypto-course-module5.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М5 · Безопасность</a>
+      <a href="crypto-course-module6.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М6 · Покупка и MetaMask</a>
+      <a href="crypto-course-module7.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М7 · Основы трейдинга</a>
+      <a href="crypto-course-module8.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М8 · Технический анализ</a>
+      <a href="crypto-course-module9.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М9 · Фундаментальный анализ</a>
+      <a href="crypto-course-module10.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М10 · DeFi</a>
+      <a href="crypto-course-module11.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М11 · Психология и циклы</a>
+      <a href="crypto-course-module12.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ М12 · Smart Money Concepts</a>
+      <a href="crypto-course-bonus-fintech.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">✓ Бонус · Крипто-финтех</a>
+      <a href="crypto-course-bonus-macrodata.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">● Бонус · Макро-данные</a>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- ===== УРОК 1: КАК МАКРО ДВИЖЕТ КРИПТУ ===== -->
+<div class="lesson active" id="lesson-1">
+  <div class="lesson-hero overview"><div class="module-tag">Бонус · Урок 1</div><h1>Как макроэкономика движет криптовалютными рынками</h1><div class="lesson-number">★</div></div>
+  <div class="lesson-body">
+
+    <h2>Почему трейдер должен смотреть на ФРС</h2>
+    <p>Многие новички думают, что крипта — это отдельный мир, живущий по своим законам. Это <strong>ошибка, которая стоит денег</strong>. Начиная с 2020 года биткоин и альткоины стали вести себя как рисковый актив — они коррелируют с акциями технологических компаний, с политикой ФРС и с настроениями глобального рынка.</p>
+
+    <p>Понять, <strong>когда выйти на рынок, а когда сидеть в стейблкоинах</strong>, невозможно без понимания макроэкономической картины. Этот модуль даёт тебе инструменты для этого.</p>
+
+    <div class="analogy">
+      <div class="analogy-title">Аналогия</div>
+      <p>Представь, что крипторынок — это <strong>парусная лодка</strong>. Технический анализ — это руль. Но если ФРС создаёт встречный ветер (повышает ставки и сжимает ликвидность), никакой руль не поможет. Макроэкономика — это ветер. Умный трейдер сначала смотрит на ветер, потом рулит.</p>
+    </div>
+
+    <h2>Три уровня влияния на крипту</h2>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="28" font-family="Oswald, sans-serif" font-size="15" fill="#2D2D2D" text-anchor="middle" font-weight="600">ИЕРАРХИЯ ФАКТОРОВ ВЛИЯНИЯ НА БИТКОИН</text>
+
+        <!-- Level 1: Macro -->
+        <rect x="140" y="50" width="440" height="72" rx="10" fill="#1A237E" opacity=".9"/>
+        <text x="360" y="82" font-family="Oswald, sans-serif" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">УРОВЕНЬ 1 — МАКРОЭКОНОМИКА</text>
+        <text x="360" y="106" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,.75)">ФРС, ставки, инфляция (CPI), рынок труда (NFP), ВВП — двигают весь рынок</text>
+
+        <!-- Level 2: Crypto-specific -->
+        <rect x="200" y="142" width="320" height="72" rx="10" fill="#1B5E20" opacity=".9"/>
+        <text x="360" y="174" font-family="Oswald, sans-serif" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">УРОВЕНЬ 2 — КРИПТО-ДАННЫЕ</text>
+        <text x="360" y="198" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,.75)">Халвинг, ETF-потоки, on-chain метрики, ликвидации, доминанция BTC</text>
+
+        <!-- Level 3: Technical -->
+        <rect x="260" y="234" width="200" height="72" rx="10" fill="#4A148C" opacity=".9"/>
+        <text x="360" y="268" font-family="Oswald, sans-serif" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">УРОВЕНЬ 3 — ТЕХАНАЛИЗ</text>
+        <text x="360" y="292" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,.75)">Поддержки, уровни, паттерны, RSI, объёмы</text>
+
+        <!-- Arrows -->
+        <path d="M360 122 L360 142" stroke="#E0D8CC" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M360 214 L360 234" stroke="#E0D8CC" stroke-width="2" marker-end="url(#arr)"/>
+        <defs><marker id="arr" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#E0D8CC"/></marker></defs>
+      </svg>
+      <div class="svg-caption">Макроэкономика задаёт направление — остальные уровни уточняют точку входа</div>
+    </div>
+
+    <h2>Корреляция BTC с рисковыми активами</h2>
+    <p>С 2020 по 2025 год биткоин показывал высокую корреляцию с индексом NASDAQ (технологические акции). Простая закономерность: <strong>когда инвесторы «рискуют» — растёт и NASDAQ, и BTC. Когда бегут в безопасность — падает всё.</strong></p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="24" font-family="Oswald, sans-serif" font-size="14" fill="#2D2D2D" text-anchor="middle" font-weight="600">РЕЖИМ РЫНКА И ПОВЕДЕНИЕ BTC</text>
+
+        <!-- Risk-On -->
+        <rect x="20" y="45" width="210" height="175" rx="10" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+        <text x="125" y="70" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#2E7D32" font-weight="700">RISK-ON 📈</text>
+        <text x="125" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#388E3C">Инвесторы берут риск</text>
+        <text x="125" y="118" font-family="Montserrat, sans-serif" font-size="24" text-anchor="middle">🟢</text>
+        <text x="125" y="148" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#2D2D2D" font-weight="600">Ставки снижаются</text>
+        <text x="125" y="166" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Инфляция падает</text>
+        <text x="125" y="184" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Экономика растёт</text>
+        <text x="125" y="205" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#1B5E20" font-weight="600">BTC: РОСТ ↑</text>
+
+        <!-- Uncertain -->
+        <rect x="255" y="45" width="210" height="175" rx="10" fill="#FFF8E1" stroke="#FFB300" stroke-width="2"/>
+        <text x="360" y="70" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#F57F17" font-weight="700">НЕОПРЕДЕЛЁННОСТЬ 🔄</text>
+        <text x="360" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#E65100">Рынок ждёт данных</text>
+        <text x="360" y="118" font-family="Montserrat, sans-serif" font-size="24" text-anchor="middle">🟡</text>
+        <text x="360" y="148" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#2D2D2D" font-weight="600">Перед важными отчётами</text>
+        <text x="360" y="166" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Волатильность растёт</text>
+        <text x="360" y="184" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Объёмы падают</text>
+        <text x="360" y="205" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#E65100" font-weight="600">BTC: БОКОВИК ↔</text>
+
+        <!-- Risk-Off -->
+        <rect x="490" y="45" width="210" height="175" rx="10" fill="#FFEBEE" stroke="#EF5350" stroke-width="2"/>
+        <text x="595" y="70" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#C62828" font-weight="700">RISK-OFF 📉</text>
+        <text x="595" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#C62828">Инвесторы уходят в кэш</text>
+        <text x="595" y="118" font-family="Montserrat, sans-serif" font-size="24" text-anchor="middle">🔴</text>
+        <text x="595" y="148" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#2D2D2D" font-weight="600">Ставки повышаются</text>
+        <text x="595" y="166" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Инфляция высокая</text>
+        <text x="595" y="184" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A">Рецессия или страх</text>
+        <text x="595" y="205" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#B71C1C" font-weight="600">BTC: ПАДЕНИЕ ↓</text>
+      </svg>
+      <div class="svg-caption">Определи режим рынка — и ты поймёшь, куда смотрит BTC в ближайшие недели</div>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-title">Главное правило</div>
+      <p>Перед открытием позиции всегда задай себе вопрос: <strong>«Какой сейчас режим рынка?»</strong> Risk-on, risk-off или неопределённость. Ответ на этот вопрос важнее любого паттерна на графике.</p>
+    </div>
+
+    <div class="quiz" id="quiz1">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">ФРС только что повысила ставки выше ожиданий и намекнула на ещё два повышения. Как правильно трактовать это для крипторынка?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Это позитивно — значит экономика сильная, биткоин будет расти</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,true)">Risk-off сигнал: ликвидность сжимается, деньги уходят из рисковых активов — BTC под давлением</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Крипта никак не связана с ФРС, это разные рынки</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Нужно срочно купить альткоины, пока не выросли</button>
+      <div class="quiz-feedback correct" id="quiz1-correct">Верно! Повышение ставок = risk-off режим. Ликвидность на рынке сжимается, спекулятивные активы (крипта, акции роста) продают в первую очередь. Это сигнал к осторожности: сокращай позиции или держи стейблкоины.</div>
+      <div class="quiz-feedback wrong" id="quiz1-wrong">Не совсем. С 2020 года крипта тесно коррелирует с рисковыми активами. Повышение ставок ФРС — это классический risk-off сигнал, который создаёт давление на BTC и альткоины.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме</h3>
+      <ul>
+        <li>Крипта с 2020 года — рисковый актив: реагирует на макро так же, как NASDAQ</li>
+        <li>Три режима: Risk-On (BTC растёт), Risk-Off (BTC падает), Неопределённость (боковик)</li>
+        <li>Макроэкономика — первый фильтр перед любой сделкой</li>
+        <li>Режим рынка определяет направление, теханализ — точку входа</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><div></div><button class="btn btn-primary" onclick="goToLesson(2)">Далее: Ключевые отчёты США →</button></div>
+  </div>
+</div>
+
+<!-- ===== УРОК 2: КЛЮЧЕВЫЕ ОТЧЁТЫ США ===== -->
+<div class="lesson" id="lesson-2">
+  <div class="lesson-hero fed"><div class="module-tag">Бонус · Урок 2</div><h1>Ключевые отчёты США и решения ФРС</h1><div class="lesson-number">★</div></div>
+  <div class="lesson-body">
+
+    <h2>CPI — Индекс потребительских цен (Инфляция)</h2>
+
+    <div class="report-card">
+      <div class="report-icon" style="background:linear-gradient(135deg,#BF360C,#D84315);color:#fff">📊</div>
+      <div>
+        <div class="report-title">CPI — Consumer Price Index</div>
+        <div class="report-timing">📅 Выходит раз в месяц, обычно второй вторник/среда · 15:30 МСК</div>
+        <div class="report-body">Показывает, насколько выросли цены на потребительские товары за месяц. <strong>Самый важный отчёт для крипты</strong> — именно от него зависит, будет ли ФРС повышать, держать или снижать ставки.</div>
+      </div>
+    </div>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ</span>
+      <h4>CPI ниже прогноза (дезинфляция)</h4>
+      <p>Инфляция замедляется — ФРС может начать снижать ставки. Деньги потекут в рисковые активы. BTC и альткоины исторически реагируют ростом на +1–5% в течение 24 часов после выхода данных. Пример: ноябрь 2023 — CPI 3.2% при прогнозе 3.3% → BTC +6% за день.</p>
+    </div>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ</span>
+      <h4>CPI выше прогноза (инфляция ускоряется)</h4>
+      <p>Инфляция не поддаётся — ФРС вынуждена держать ставки высокими или повышать дальше. Это risk-off. BTC традиционно падает на 2–8% в первые часы. Пример: июнь 2022 — CPI 8.6% при прогнозе 8.3% → BTC -10% за 48 часов.</p>
+    </div>
+
+    <div class="signal-card neutral">
+      <span class="signal-badge">⚖️ НЕЙТРАЛ</span>
+      <h4>CPI в рамках прогноза</h4>
+      <p>Рынок уже заложил данные в цену. Резкого движения обычно нет. Возможен небольшой pump на облегчении или dump на фиксации прибыли. Торговать в первые 15 минут после выхода — высокий риск ложных движений.</p>
+    </div>
+
+    <h2>NFP — Количество новых рабочих мест</h2>
+
+    <div class="report-card">
+      <div class="report-icon" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff">👷</div>
+      <div>
+        <div class="report-title">Non-Farm Payrolls (NFP)</div>
+        <div class="report-timing">📅 Первая пятница каждого месяца · 15:30 МСК</div>
+        <div class="report-body">Количество новых рабочих мест вне сельского хозяйства за месяц. Отражает здоровье экономики США. Вторичен по силе влияния после CPI, но в совокупности с ним даёт полную картину.</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Сценарий NFP</th><th>Что означает</th><th>Реакция BTC</th><th>Логика</th></tr></thead>
+      <tbody>
+        <tr><td class="label-cell" style="color:#2E7D32">Слабый NFP</td><td>Экономика замедляется</td><td style="color:#2E7D32;font-weight:700">📈 Рост</td><td>Слабая экономика → ФРС смягчит политику → ставки вниз → деньги в риск</td></tr>
+        <tr><td class="label-cell" style="color:#E65100">В рамках</td><td>Рынок не удивлён</td><td>↔ Боковик</td><td>Данные уже в цене, значимого движения нет</td></tr>
+        <tr><td class="label-cell" style="color:#C62828">Сильный NFP</td><td>Рынок труда горячий</td><td style="color:#C62828;font-weight:700">📉 Падение</td><td>Сильный рынок труда → ФРС может держать ставки высокими дольше → risk-off</td></tr>
+      </tbody>
+    </table>
+
+    <div class="analogy">
+      <div class="analogy-title">Парадокс NFP</div>
+      <p>Кажется странным: <strong>плохие данные по рынку труда = рост биткоина?</strong> Да. Потому что «плохо для экономики» = «хорошо для денежной политики» = «ФРС будет печатать/снижать ставки» = «хорошо для рисковых активов». Это называют: <em>«Bad news is good news»</em>.</p>
+    </div>
+
+    <h2>Решение ФРС по процентной ставке (FOMC)</h2>
+
+    <div class="report-card">
+      <div class="report-icon" style="background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff">🏛️</div>
+      <div>
+        <div class="report-title">FOMC Meeting — Решение ФРС</div>
+        <div class="report-timing">📅 8 раз в год · Каждые ~6 недель · 21:00 МСК (решение) + пресс-конференция в 21:30</div>
+        <div class="report-body"><strong>Самое важное событие месяца</strong> для любого трейдера. ФРС объявляет решение по ставке — оставить/повысить/снизить. Но важны не только цифры, а <strong>слова председателя Пауэлла</strong> на пресс-конференции: его формулировки задают ожидания на следующие месяцы.</p></div>
+      </div>
+    </div>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ</span>
+      <h4>Снижение ставки или «голубиный» сигнал</h4>
+      <p>ФРС снижает ставку или Пауэлл говорит о «готовности к смягчению» — это мощнейший бычий сигнал. Ликвидность растёт, деньги ищут доходность. Исторически BTC давал +15–30% в течение 1–3 месяцев после первого снижения цикла.</p>
+    </div>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ</span>
+      <h4>Повышение ставки или «ястребиный» сигнал</h4>
+      <p>Ставка растёт или Пауэлл говорит о «сохранении жёсткости дольше, чем ожидалось» — давление на BTC. Особенно опасно, если рынок ожидал паузу, а получил повышение — это называют «сюрприз» и он даёт самые резкие движения.</p>
+    </div>
+
+    <h3>Словарь ФРС — как читать сигналы</h3>
+
+    <table class="data-table">
+      <thead><tr><th>Формулировка Пауэлла</th><th>Что означает</th><th>Сигнал для BTC</th></tr></thead>
+      <tbody>
+        <tr><td class="label-cell">"Data dependent"</td><td>Будем смотреть на данные — без обязательств</td><td>Нейтрально</td></tr>
+        <tr><td class="label-cell">"Higher for longer"</td><td>Ставки останутся высокими долго</td><td style="color:#C62828">🔴 Медвежий</td></tr>
+        <tr><td class="label-cell">"Appropriate to cut"</td><td>Снижение ставки уместно</td><td style="color:#2E7D32">🟢 Бычий</td></tr>
+        <tr><td class="label-cell">"Disinflation"</td><td>Признаёт замедление инфляции</td><td style="color:#2E7D32">🟢 Бычий</td></tr>
+        <tr><td class="label-cell">"Tight financial conditions"</td><td>Финансовые условия уже жёсткие</td><td style="color:#2E7D32">🟢 Слабо бычий</td></tr>
+        <tr><td class="label-cell">"Inflation remains elevated"</td><td>Инфляция ещё высокая — снижения не ждите</td><td style="color:#C62828">🔴 Медвежий</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ВВП и другие данные второго уровня</h2>
+
+    <div class="info-block">
+      <h4>Отчёты второго уровня — влияние есть, но слабее</h4>
+      <ul>
+        <li><strong>GDP (ВВП) — ежеквартально:</strong> Отрицательный 2 квартала подряд = рецессия. BTC реагирует резко, но эффект часто уже «в цене»</li>
+        <li><strong>PPI (индекс цен производителей) — ежемесячно:</strong> Опережающий индикатор инфляции. Высокий PPI → высокий CPI через 1–2 месяца</li>
+        <li><strong>PCE (индекс расходов потребителей) — ежемесячно:</strong> Любимый инфляционный показатель ФРС (важнее CPI для самого регулятора)</li>
+        <li><strong>Jobless Claims — еженедельно:</strong> Количество первичных заявок на пособие по безработице. Резкий рост = сигнал ослабления рынка труда</li>
+        <li><strong>ISM Manufacturing/Services — ежемесячно:</strong> Индекс деловой активности. Ниже 50 = сжатие экономики</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz2">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">CPI вышел: ожидание было 3.1%, факт — 2.8%. Рынок труда остаётся умеренно сильным. На пресс-конференции Пауэлл говорит "disinflation is ongoing". Как реагировать на крипторынке?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,true)">Это бычий сигнал: CPI лучше прогноза + голубиная риторика ФРС → лонг BTC и альтов</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">Нейтрально: ФРС ничего не изменила сегодня, покупать рано</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">Медвежий: рынок труда сильный, ФРС не будет снижать</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">Нужно шортить — такой рост уже заложен в цену</button>
+      <div class="quiz-feedback correct" id="quiz2-correct">Отлично! Три бычьих фактора совпали: CPI ниже прогноза (дезинфляция), слово «disinflation» от Пауэлла (признание тренда), умеренный рынок труда (не перегрет). Это классический setup для лонга — рынок переоценивает вероятность скорого снижения ставок.</div>
+      <div class="quiz-feedback wrong" id="quiz2-wrong">Не совсем. CPI ниже прогноза — это уже сигнал. Слово «disinflation» от Пауэлла — это рынки читают как разрешение покупать риск. Совокупность этих факторов исторически давала рост BTC в 24–72 часа после события.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме</h3>
+      <ul>
+        <li>CPI — главный отчёт: ниже прогноза = бычий, выше прогноза = медвежий</li>
+        <li>NFP — парадоксален: слабые данные = бычий сигнал (ФРС смягчит политику)</li>
+        <li>FOMC — 8 раз в год: слова Пауэлла важнее самого решения по ставке</li>
+        <li>Читай не только цифры, но и риторику: «data dependent» ≠ «higher for longer»</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(1)">← Предыдущий</button><button class="btn btn-primary" onclick="goToLesson(3)">Далее: Крипто-данные →</button></div>
+  </div>
+</div>
+
+<!-- ===== УРОК 3: КРИПТО-СПЕЦИФИЧЕСКИЕ ДАННЫЕ ===== -->
+<div class="lesson" id="lesson-3">
+  <div class="lesson-hero onchain"><div class="module-tag">Бонус · Урок 3</div><h1>Крипто-специфические данные и on-chain метрики</h1><div class="lesson-number">★</div></div>
+  <div class="lesson-body">
+
+    <h2>Bitcoin ETF — потоки капитала (Flow)</h2>
+    <p>С января 2024 года в США торгуются спотовые Bitcoin ETF (BlackRock, Fidelity и др.). Их <strong>ежедневные данные по притокам и оттокам</strong> стали одним из самых важных рыночных индикаторов.</p>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ</span>
+      <h4>ETF-приток: $500M+ за день</h4>
+      <p>Крупный институциональный капитал заходит в BTC. Это прямая покупка биткоина провайдерами ETF на спотовом рынке. Несколько дней подряд с приток ом > $300M — мощный бычий сигнал. Данные публикует Bloomberg и Farside Investors каждый вечер.</p>
+    </div>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ</span>
+      <h4>ETF-отток: 3+ дня подряд</h4>
+      <p>Институционалы фиксируют прибыль или уходят из рисковых активов. Особенно тревожно, если отток идёт на фоне боковика цены — это означает, что продажи поглощают спрос и готовится движение вниз.</p>
+    </div>
+
+    <h2>Доминанция биткоина (BTC Dominance)</h2>
+    <p>Показывает долю биткоина в общей капитализации всего крипторынка. Формула: <strong>Капитализация BTC / Общая капитализация × 100%</strong></p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="24" font-family="Oswald, sans-serif" font-size="14" fill="#2D2D2D" text-anchor="middle" font-weight="600">BTC DOMINANCE → ЧТО ПОКУПАТЬ</text>
+
+        <rect x="20" y="45" width="210" height="130" rx="10" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+        <text x="125" y="70" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#E65100" font-weight="700">ДОМИНАНЦИЯ РАСТЁТ</text>
+        <text x="125" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5D4037">BTC сильнее альтов</text>
+        <text x="125" y="112" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#BF360C" font-weight="600">→ Держи BTC</text>
+        <text x="125" y="130" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#BF360C" font-weight="600">→ Сокращай альты</text>
+        <text x="125" y="160" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">Риск-офф внутри крипты</text>
+
+        <rect x="255" y="45" width="210" height="130" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <text x="360" y="70" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#1565C0" font-weight="700">ДОМИНАНЦИЯ СТАБИЛЬНА</text>
+        <text x="360" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#1565C0">Рынок консолидируется</text>
+        <text x="360" y="112" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#0D47A1" font-weight="600">→ Следи за уровнями</text>
+        <text x="360" y="130" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#0D47A1" font-weight="600">→ Готовь план обоих сценариев</text>
+        <text x="360" y="160" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">Ждём катализатора</text>
+
+        <rect x="490" y="45" width="210" height="130" rx="10" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+        <text x="595" y="70" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#2E7D32" font-weight="700">ДОМИНАНЦИЯ ПАДАЕТ</text>
+        <text x="595" y="92" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#388E3C">Альткоины опережают BTC</text>
+        <text x="595" y="112" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#1B5E20" font-weight="600">→ Альткоин-сезон начинается</text>
+        <text x="595" y="130" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#1B5E20" font-weight="600">→ Покупай топ-альты (ETH, SOL)</text>
+        <text x="595" y="160" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">Риск-он внутри крипты</text>
+      </svg>
+      <div class="svg-caption">Доминанция BTC — компас для распределения портфеля между биткоином и альтами</div>
+    </div>
+
+    <h2>On-chain метрики — заглядываем в блокчейн</h2>
+
+    <div class="report-card">
+      <div class="report-icon" style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff">⛓️</div>
+      <div>
+        <div class="report-title">Exchange Netflow — приток/отток BTC на биржи</div>
+        <div class="report-timing">📡 Real-time · Источники: CryptoQuant, Glassnode</div>
+        <div class="report-body">Когда крупные холдеры переводят BTC <strong>на биржу</strong> — они готовятся продать. Когда снимают <strong>с биржи</strong> — в cold storage — это накопление. Это называют «smart money» сигналом.</div>
+      </div>
+    </div>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ</span>
+      <h4>Большой отток BTC с бирж (Negative Netflow)</h4>
+      <p>Киты переводят монеты в холодные кошельки — это признак накопления и уверенности в росте. Особенно значимо, если отток идёт несколько недель подряд и совпадает с мелкими коррекциями.</p>
+    </div>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ</span>
+      <h4>Массовый приток BTC на биржи (Positive Netflow)</h4>
+      <p>Крупные адреса готовятся к продаже. Если на биржи за сутки приходит больше 25 000–50 000 BTC — это тревожный сигнал нависшего предложения. Часто совпадает с локальными вершинами.</p>
+    </div>
+
+    <div class="report-card">
+      <div class="report-icon" style="background:linear-gradient(135deg,#004D40,#00695C);color:#fff">💰</div>
+      <div>
+        <div class="report-title">Данные по ликвидациям (Liquidations)</div>
+        <div class="report-timing">📡 Real-time · Coinglass.com</div>
+        <div class="report-body">На фьючерсном рынке трейдеры с плечом принудительно закрываются (ликвидируются) при резких движениях. Карта ликвидаций показывает, <strong>где сосредоточены стоп-лоссы</strong> — туда рынок часто «ходит» специально.</div>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-title">Как читать ликвидации</div>
+      <p>Представь: на уровне $68 000 стоят лонги на $800M. Если цена упадёт до $68 000 — они принудительно закроются (продадутся), что толкнёт цену ещё ниже. <strong>Крупные игроки знают это и часто специально «охотятся» за такими уровнями.</strong> Видишь большой кластер лонгов снизу? Осторожно — рынок может туда провалиться.</p>
+    </div>
+
+    <h2>Fear & Greed Index — настроение рынка</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Значение</th><th>Настроение</th><th>Что делать</th><th>Логика</th></tr></thead>
+      <tbody>
+        <tr><td class="label-cell" style="color:#C62828">0–25</td><td>🔴 Extreme Fear (Страх)</td><td style="color:#2E7D32;font-weight:700">Покупать осторожно</td><td>Все боятся — значит цена уже низко, можно накапливать</td></tr>
+        <tr><td class="label-cell" style="color:#E65100">26–45</td><td>🟠 Fear (Страх)</td><td>Смотреть за сетапами лонг</td><td>Негатив преобладает, хорошие цены для входа</td></tr>
+        <tr><td class="label-cell" style="color:#FFB300">46–55</td><td>🟡 Neutral</td><td>По тренду</td><td>Нет ни перегрева, ни паники — нейтральная зона</td></tr>
+        <tr><td class="label-cell" style="color:#7CB342">56–75</td><td>🟢 Greed (Жадность)</td><td>Осторожнее с лонгами</td><td>Рынок оптимистичен — риск коррекции растёт</td></tr>
+        <tr><td class="label-cell" style="color:#2E7D32">76–100</td><td>💚 Extreme Greed (Эйфория)</td><td style="color:#C62828;font-weight:700">Фиксировать прибыль</td><td>Все покупают — значит покупать уже некому, разворот близко</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-point">
+      <div class="key-point-title">Правило Баффетта для крипты</div>
+      <p>«Бойся, когда другие жадные. Будь жадным, когда другие боятся.» Fear & Greed Index — это числовое выражение этого принципа. <strong>Extreme Fear (0–25) исторически давал лучшие точки входа в BTC.</strong></p>
+    </div>
+
+    <div class="quiz" id="quiz3">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">BTC Dominance падает с 58% до 52% за 2 недели. Fear & Greed показывает 72 (Greed). ETF-потоки умеренно положительные. Что из этого следует?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Нужно срочно продавать всё — рынок перегрет</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,true)">Начинается альткоин-сезон: снижение доминанца = деньги перетекают в альты. Greed — повышенная осторожность, но не разворот</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Покупай BTC, раз доминанция падает — он будет расти быстрее</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Бесполезные данные — торгуй только по теханализу</button>
+      <div class="quiz-feedback correct" id="quiz3-correct">Правильно! Падение доминанцы BTC — классический сигнал альт-сезона. Деньги ротируются из биткоина в альткоины. Greed 72 говорит о перегреве, но не о немедленном развороте. Стратегия: покупать топ-альты (ETH, SOL), но с чёткими стопами.</div>
+      <div class="quiz-feedback wrong" id="quiz3-wrong">Не совсем. Падение доминанцы = альт-сезон, не продажа. Greed 72 — повышенный риск, но не сигнал немедленного краша. Комбинация говорит: альт-сезон продолжается, торгуй альты, следи за дальнейшим ростом Fear & Greed к 85+.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме</h3>
+      <ul>
+        <li>Bitcoin ETF flow — ежедневный индикатор институционального спроса</li>
+        <li>BTC Dominance падает → альт-сезон. Растёт → держи BTC, сокращай альты</li>
+        <li>Exchange Netflow: отток с бирж = накопление (бычий), приток = продажи (медвежий)</li>
+        <li>Fear & Greed: покупай в extreme fear, фиксируй в extreme greed</li>
+        <li>Карта ликвидаций: рынок «охотится» за крупными кластерами стопов</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(2)">← Предыдущий</button><button class="btn btn-primary" onclick="goToLesson(4)">Далее: Экономический календарь →</button></div>
+  </div>
+</div>
+
+<!-- ===== УРОК 4: ЭКОНОМИЧЕСКИЙ КАЛЕНДАРЬ ===== -->
+<div class="lesson" id="lesson-4">
+  <div class="lesson-hero calendar"><div class="module-tag">Бонус · Урок 4</div><h1>Экономический календарь: когда и как готовиться</h1><div class="lesson-number">★</div></div>
+  <div class="lesson-body">
+
+    <h2>Инструменты для отслеживания событий</h2>
+
+    <div class="info-block">
+      <h4>📌 Обязательные ресурсы трейдера</h4>
+      <ul>
+        <li><strong>Investing.com/economic-calendar</strong> — главный экономический календарь. Фильтруй по «важности: 3 звезды» для ключевых событий</li>
+        <li><strong>Farside.co.uk/bitcoin-etf-flow</strong> — ежедневные данные по потокам Bitcoin ETF</li>
+        <li><strong>CryptoQuant.com</strong> — on-chain метрики: Exchange Flow, Miner Selling, Whale Activity</li>
+        <li><strong>Coinglass.com</strong> — карта ликвидаций, open interest, данные по фьючерсам</li>
+        <li><strong>Alternative.me/crypto/fear-and-greed-index</strong> — Fear & Greed Index</li>
+        <li><strong>TradingView.com</strong> — встроенный экономический календарь прямо на графиках</li>
+      </ul>
+    </div>
+
+    <h2>Типичная торговая неделя: что когда смотреть</h2>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 310" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="24" font-family="Oswald, sans-serif" font-size="14" fill="#2D2D2D" text-anchor="middle" font-weight="600">ЕЖЕНЕДЕЛЬНЫЙ РАСПОРЯДОК ТРЕЙДЕРА</text>
+
+        <!-- Days -->
+        <rect x="20" y="45" width="130" height="250" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+        <text x="85" y="68" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#1565C0" font-weight="700">ПН</text>
+        <text x="85" y="90" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">ETF flow (воскресенье)</text>
+        <text x="85" y="108" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Недельный план</text>
+        <text x="85" y="126" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Проверка календаря</text>
+        <text x="85" y="160" font-family="Montserrat, sans-serif" font-size="20" text-anchor="middle">📅</text>
+
+        <rect x="162" y="45" width="130" height="250" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1.5"/>
+        <text x="227" y="68" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#7B1FA2" font-weight="700">ВТ-СР</text>
+        <text x="227" y="90" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">ISM / ADP данные</text>
+        <text x="227" y="108" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">CPI (если в этот день)</text>
+        <text x="227" y="126" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Exchange netflow</text>
+        <text x="227" y="160" font-family="Montserrat, sans-serif" font-size="20" text-anchor="middle">📊</text>
+
+        <rect x="304" y="45" width="130" height="250" rx="8" fill="#FFF3E0" stroke="#F57C00" stroke-width="1.5"/>
+        <text x="369" y="68" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#E65100" font-weight="700">ЧТ</text>
+        <text x="369" y="90" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Jobless Claims (15:30)</text>
+        <text x="369" y="108" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">ETF flow предыдущего дня</text>
+        <text x="369" y="126" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Fear & Greed Index</text>
+        <text x="369" y="160" font-family="Montserrat, sans-serif" font-size="20" text-anchor="middle">⚠️</text>
+
+        <rect x="446" y="45" width="130" height="250" rx="8" fill="#FFEBEE" stroke="#EF5350" stroke-width="2"/>
+        <text x="511" y="68" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#C62828" font-weight="700">ПТ ★ ВАЖНО</text>
+        <text x="511" y="90" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">NFP (1-я пятница мес.)</text>
+        <text x="511" y="108" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">15:30 МСК — БЕЗ ПЛЕЧА</text>
+        <text x="511" y="126" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">до выхода данных</text>
+        <text x="511" y="160" font-family="Montserrat, sans-serif" font-size="20" text-anchor="middle">🎯</text>
+
+        <rect x="588" y="45" width="112" height="250" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1.5"/>
+        <text x="644" y="68" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#2E7D32" font-weight="700">СБ-ВС</text>
+        <text x="644" y="90" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Анализ недели</text>
+        <text x="644" y="108" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">On-chain метрики</text>
+        <text x="644" y="126" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Whale tracker</text>
+        <text x="644" y="160" font-family="Montserrat, sans-serif" font-size="20" text-anchor="middle">🧘</text>
+
+        <!-- Bottom labels -->
+        <text x="85" y="278" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#1565C0" font-weight="600">ПОДГОТОВКА</text>
+        <text x="227" y="278" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#7B1FA2" font-weight="600">МОНИТОРИНГ</text>
+        <text x="369" y="278" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#E65100" font-weight="600">СЛЕЖЕНИЕ</text>
+        <text x="511" y="278" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#C62828" font-weight="600">СОБЫТИЕ</text>
+        <text x="644" y="278" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#2E7D32" font-weight="600">АНАЛИЗ</text>
+      </svg>
+      <div class="svg-caption">Структурируй неделю вокруг ключевых событий — не торгуй хаотично</div>
+    </div>
+
+    <h2>Стратегия поведения до и после важных данных</h2>
+
+    <div class="step-list">
+      <div class="step-item">
+        <h4>За 24–48 часов: проверь календарь</h4>
+        <p>Открой Investing.com или TradingView → Economic Calendar → поставь фильтр «3 звезды». Выпиши прогноз по CPI/NFP/FOMC на эту неделю. Определи время выхода (в МСК).</p>
+      </div>
+      <div class="step-item">
+        <h4>За 2–4 часа: сократи или убери плечо</h4>
+        <p>Перед выходом крупного отчёта рынок может двинуться резко в любую сторону. Если у тебя открыты позиции с 5–10x плечом — это рулетка. Сократи плечо до 1–2x или закройся в стейблкоины.</p>
+      </div>
+      <div class="step-item">
+        <h4>В момент выхода: не торгуй первые 5–15 минут</h4>
+        <p>Первая реакция рынка часто ложная. Алгоритмы «фейкают» движение, собирают стопы и разворачиваются. Дай рынку «переварить» данные. Лучшая точка входа — через 15–30 минут после выхода.</p>
+      </div>
+      <div class="step-item">
+        <h4>После выхода: оцени реакцию относительно ожиданий</h4>
+        <p>Данные вышли. Сравни факт с прогнозом. Если рынок растёт на «плохих» данных — это сила. Если падает на «хороших» — это слабость. Реакция рынка важнее самих данных.</p>
+      </div>
+      <div class="step-item">
+        <h4>Через 1–4 часа: ищи сетап</h4>
+        <p>Теперь направление определено. Строй позицию по тренду реакции с понятным стоп-лоссом. Первые 4–24 часа после CPI/NFP часто дают чёткое направленное движение.</p>
+      </div>
+    </div>
+
+    <div class="danger-block">
+      <h4>Типичные ошибки при торговле на данных</h4>
+      <ul>
+        <li>Открывать позицию с плечом ЗА 30 минут до выхода CPI «угадывая» данные</li>
+        <li>Входить в первые 5 минут — рынок намеренно «трясёт» в обе стороны</li>
+        <li>Игнорировать прогноз: данные кажутся хорошими, но хуже прогноза = плохой сигнал</li>
+        <li>Не проверять риторику ФРС: ставка не изменилась, но слова ястребиные → медвежий сигнал</li>
+        <li>Торговать мелкие данные так же агрессивно, как CPI или FOMC</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz4">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">Сегодня в 15:30 МСК выходит CPI. Сейчас 14:00 МСК. У тебя открыт лонг BTC с 8x плечом. Как правильно поступить?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Держать позицию — я уверен, что CPI выйдет ниже прогноза</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,true)">Сократить плечо до 1–2x или закрыться. Перед CPI с 8x — это лотерея, а не трейдинг</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Добавить стоп-лосс в 0.5% и держать плечо — всё под контролем</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Добавить ещё к позиции — перед CPI всегда pump</button>
+      <div class="quiz-feedback correct" id="quiz4-correct">Отлично! 8x плечо перед CPI — это экстремальный риск. Даже при правильном прогнозе первый «фейк» в 15 минут после выхода может тебя ликвидировать. Сократи плечо, дождись реакции, потом входи с меньшим риском и большей уверенностью.</div>
+      <div class="quiz-feedback wrong" id="quiz4-wrong">Опасно. Стоп 0.5% при 8x = реальный стоп 0.0625% от цены — это слишком узко для волатильности момента. «Уверенность» в прогнозе не защищает от алгоритмов. Правило простое: перед крупными данными — убирай плечо.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме</h3>
+      <ul>
+        <li>Отмечай CPI, NFP, FOMC в календаре заранее — это три самых важных события</li>
+        <li>За 2–4 часа до выхода: убирай или сокращай плечо</li>
+        <li>Первые 5–15 минут после данных — не торгуй: ложные движения</li>
+        <li>Торгуй «реакцию на ожидания», не просто «хорошо/плохо»</li>
+        <li>Основные ресурсы: Investing.com, Farside, CryptoQuant, Coinglass</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(3)">← Предыдущий</button><button class="btn btn-primary" onclick="goToLesson(5)">Далее: Сигналы Лонг/Шорт →</button></div>
+  </div>
+</div>
+
+<!-- ===== УРОК 5: СИГНАЛЫ ЛОНГ / ШОРТ ===== -->
+<div class="lesson" id="lesson-5">
+  <div class="lesson-hero signals"><div class="module-tag">Бонус · Урок 5</div><h1>Сводная таблица сигналов: когда лонг, когда шорт</h1><div class="lesson-number">★</div></div>
+  <div class="lesson-body">
+
+    <h2>Система оценки макро-фона</h2>
+    <p>Ни один показатель не даёт 100% точного сигнала. <strong>Ключ — в совокупности данных</strong>. Собери «очки» по каждому индикатору и посмотри, куда склоняется баланс.</p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="24" font-family="Oswald, sans-serif" font-size="15" fill="#2D2D2D" text-anchor="middle" font-weight="600">SCORECARD — ОЦЕНИ РЫНОЧНЫЙ ФОН</text>
+
+        <!-- Header -->
+        <rect x="20" y="40" width="680" height="36" rx="6" fill="#2D2D2D"/>
+        <text x="130" y="63" font-family="Oswald, sans-serif" font-size="12" fill="#fff" font-weight="600">ИНДИКАТОР</text>
+        <text x="340" y="63" font-family="Oswald, sans-serif" font-size="12" fill="#fff" font-weight="600" text-anchor="middle">БЫЧИЙ (+1)</text>
+        <text x="560" y="63" font-family="Oswald, sans-serif" font-size="12" fill="#fff" font-weight="600" text-anchor="middle">МЕДВЕЖИЙ (−1)</text>
+
+        <!-- Row 1 -->
+        <rect x="20" y="76" width="680" height="38" rx="0" fill="#FFFDF8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="100" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">CPI</text>
+        <text x="340" y="100" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">Ниже прогноза</text>
+        <text x="560" y="100" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">Выше прогноза</text>
+
+        <!-- Row 2 -->
+        <rect x="20" y="114" width="680" height="38" fill="#F5F0E8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="138" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">ФРС (FOMC)</text>
+        <text x="340" y="138" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">Снижение / голубиная риторика</text>
+        <text x="560" y="138" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">Повышение / ястребиные слова</text>
+
+        <!-- Row 3 -->
+        <rect x="20" y="152" width="680" height="38" fill="#FFFDF8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="176" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">NFP</text>
+        <text x="340" y="176" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">Слабее прогноза</text>
+        <text x="560" y="176" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">Значительно выше прогноза</text>
+
+        <!-- Row 4 -->
+        <rect x="20" y="190" width="680" height="38" fill="#F5F0E8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="214" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">ETF Flow</text>
+        <text x="340" y="214" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">Приток 3+ дня подряд</text>
+        <text x="560" y="214" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">Отток 3+ дня подряд</text>
+
+        <!-- Row 5 -->
+        <rect x="20" y="228" width="680" height="38" fill="#FFFDF8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="252" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">Exchange Netflow</text>
+        <text x="340" y="252" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">Отток с бирж (накопление)</text>
+        <text x="560" y="252" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">Приток на биржи (продажи)</text>
+
+        <!-- Row 6 -->
+        <rect x="20" y="266" width="680" height="38" fill="#F5F0E8" stroke="#E0D8CC" stroke-width="0.5"/>
+        <text x="30" y="290" font-family="Montserrat, sans-serif" font-size="11" fill="#2D2D2D" font-weight="600">Fear &amp; Greed</text>
+        <text x="340" y="290" font-family="Montserrat, sans-serif" font-size="10" fill="#2E7D32" text-anchor="middle">0–30 (Extreme Fear)</text>
+        <text x="560" y="290" font-family="Montserrat, sans-serif" font-size="10" fill="#C62828" text-anchor="middle">75–100 (Extreme Greed)</text>
+
+        <!-- Result -->
+        <rect x="20" y="304" width="680" height="46" rx="0" fill="#2D2D2D"/>
+        <text x="30" y="332" font-family="Oswald, sans-serif" font-size="13" fill="#fff" font-weight="700">ИТОГ:</text>
+        <text x="200" y="332" font-family="Montserrat, sans-serif" font-size="11" fill="#66BB6A" font-weight="600">+4 и выше → Уверенный лонг</text>
+        <text x="420" y="332" font-family="Montserrat, sans-serif" font-size="11" fill="#EF9A9A" font-weight="600">−4 и ниже → Уверенный шорт / кэш</text>
+      </svg>
+      <div class="svg-caption">Заполняй scorecard перед каждой неделей — это займёт 10 минут и даст чёткое направление</div>
+    </div>
+
+    <h2>Детальные сценарии: когда лонг</h2>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 СИЛЬНЫЙ ЛОНГ</span>
+      <h4>Идеальный бычий фон</h4>
+      <p>CPI ниже прогноза + ФРС сигнализирует снижение + ETF приток 3+ дня + Fear &amp; Greed &lt; 40 + BTC Dominance стабильна. Это «Perfect Storm» для роста. Открывай позицию с умеренным плечом (2–5x) и держи несколько недель.</p>
+    </div>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ BTC</span>
+      <h4>Халвинг + снижение ставок</h4>
+      <p>Если цикл халвинга совпадает с началом цикла снижения ставок ФРС — исторически это давало самый сильный бычий рынок (2020–2021). Такое совпадение бывает раз в 4–8 лет. Если оба условия выполнены — это сигнал долгосрочного накопления.</p>
+    </div>
+
+    <div class="signal-card long">
+      <span class="signal-badge">📈 ЛОНГ АЛЬТОВ</span>
+      <h4>Альт-сезон: BTC Dominance падает</h4>
+      <p>BTC Dominance снизилась ниже 50% и продолжает падать + рынок в risk-on режиме + Fear &amp; Greed 55–70. Это сигнал для ротации: покупай ETH, SOL, топ-DeFi токены. Альты исторически опережают BTC в 2–3 раза в такие периоды.</p>
+    </div>
+
+    <h2>Детальные сценарии: когда шорт или кэш</h2>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ / КЭШ</span>
+      <h4>Стагфляция: высокий CPI + слабый ВВП</h4>
+      <p>Инфляция не падает, а экономика замедляется. ФРС в ловушке: снизить ставки нельзя (инфляция), повысить — добьёт экономику. Это худший сценарий для рисковых активов. Держи стейблкоины или открывай осторожные шорты.</p>
+    </div>
+
+    <div class="signal-card short">
+      <span class="signal-badge">📉 ШОРТ</span>
+      <h4>Крипто-специфический шок</h4>
+      <p>Крупный хак биржи, регуляторный удар (SEC против топ-проектов), крах крупного протокола (как LUNA 2022), выход крупного инвестора. Такие события создают panic selling. Лучшая стратегия: дать панике выйти и покупать ниже — не шортить вместе с толпой.</p>
+    </div>
+
+    <div class="signal-card neutral">
+      <span class="signal-badge">⚖️ НЕЙТРАЛ / КЭШ</span>
+      <h4>Неделя перед крупными данными</h4>
+      <p>На этой неделе выходят CPI + FOMC + NFP — три события подряд. Рынок не знает направления. Объёмы снижаются, движения ложные. Оптимальная тактика: закрыть часть позиций, держать стейблкоины, войти после данных.</p>
+    </div>
+
+    <h2>Быстрая шпаргалка — распечатай и повесь на стену</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Событие</th><th>Факт vs Прогноз</th><th>Сигнал BTC</th><th>Действие</th></tr></thead>
+      <tbody>
+        <tr><td class="label-cell">CPI</td><td>Факт &lt; Прогноз</td><td style="color:#2E7D32;font-weight:700">🟢 БЫЧИЙ</td><td>Лонг после 15 мин</td></tr>
+        <tr><td class="label-cell">CPI</td><td>Факт &gt; Прогноз</td><td style="color:#C62828;font-weight:700">🔴 МЕДВЕЖИЙ</td><td>Шорт или кэш</td></tr>
+        <tr><td class="label-cell">FOMC</td><td>Снижение ставки</td><td style="color:#2E7D32;font-weight:700">🟢 СИЛЬНЫЙ БЫК</td><td>Лонг BTC + альты</td></tr>
+        <tr><td class="label-cell">FOMC</td><td>Повышение ставки</td><td style="color:#C62828;font-weight:700">🔴 МЕДВЕДЬ</td><td>Кэш / шорт</td></tr>
+        <tr><td class="label-cell">NFP</td><td>Факт &lt; Прогноз</td><td style="color:#2E7D32;font-weight:700">🟢 БЫЧИЙ</td><td>Лонг (Bad = Good)</td></tr>
+        <tr><td class="label-cell">NFP</td><td>Факт &gt;&gt; Прогноз</td><td style="color:#C62828;font-weight:700">🔴 МЕДВЕЖИЙ</td><td>Кэш / сокращай</td></tr>
+        <tr><td class="label-cell">ETF Flow</td><td>Приток &gt; $500M/день</td><td style="color:#2E7D32;font-weight:700">🟢 БЫЧИЙ</td><td>Держи/добавляй лонг</td></tr>
+        <tr><td class="label-cell">ETF Flow</td><td>Отток 3+ дня</td><td style="color:#C62828;font-weight:700">🔴 МЕДВЕЖИЙ</td><td>Сокращай позиции</td></tr>
+        <tr><td class="label-cell">Fear &amp; Greed</td><td>0–25 (Extreme Fear)</td><td style="color:#2E7D32;font-weight:700">🟢 ПОКУПАЙ</td><td>Лонг BTC, накопление</td></tr>
+        <tr><td class="label-cell">Fear &amp; Greed</td><td>80–100 (Extreme Greed)</td><td style="color:#C62828;font-weight:700">🔴 ФИКСИРУЙ</td><td>Выходи из части позиций</td></tr>
+        <tr><td class="label-cell">BTC Dominance</td><td>Падает ниже 50%</td><td style="color:#2E7D32;font-weight:700">🟢 АЛЬТ-СЕЗОН</td><td>Покупай ETH, SOL, топ-альты</td></tr>
+        <tr><td class="label-cell">BTC Dominance</td><td>Растёт выше 60%</td><td style="color:#E65100;font-weight:700">🟠 ИЩИ BTC</td><td>Ротируй в BTC из альтов</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-point">
+      <div class="key-point-title">Финальное правило трейдера</div>
+      <p>Прежде чем открыть любую позицию — задай 3 вопроса: <strong>1) Какой режим рынка сейчас (risk-on/off)?</strong> 2) Что говорят последние макро-данные? 3) Что показывают on-chain метрики? Только после ответа на все три — нажимай «Открыть позицию».</p>
+    </div>
+
+    <div class="quiz" id="quiz5">
+      <h4>🧠 Финальный тест</h4>
+      <p class="quiz-question">Сводка недели: CPI вышел в рамках ожиданий (нейтрально). ETF Flow: +$1.2B за 3 дня подряд. Exchange Netflow: крупный отток BTC с бирж. Fear &amp; Greed: 48 (нейтральный). BTC Dominance: 54% и стабильна. Твоя позиция?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz5',this,false)">Шорт — CPI нейтральный, значит ФРС не будет снижать ставки</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz5',this,false)">Кэш — слишком много неопределённости, лучше ждать</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz5',this,true)">Осторожный лонг BTC: ETF Flow позитивный + отток с бирж (накопление) + Fear &amp; Greed нейтральный (не перегрет) = умеренно бычий фон</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz5',this,false)">Покупать альткоины с 10x плечом — ETF flows огромные!</button>
+      <div class="quiz-feedback correct" id="quiz5-correct">Отлично! Правильный анализ: ETF приток ($1.2B за 3 дня) + отток BTC с бирж (накопление китов) + Fear &amp; Greed 48 (нет эйфории) = умеренно бычий фон. Осторожный лонг BTC с 2–3x плечом и чётким стопом — правильный выбор. Альты — только после подтверждения роста BTC.</div>
+      <div class="quiz-feedback wrong" id="quiz5-wrong">Не совсем. ETF Flow +$1.2B за 3 дня — это сильный институциональный спрос. Отток BTC с бирж = накопление. Fear &amp; Greed 48 = нет перегрева. Совокупность сигналов даёт умеренно бычий фон, не нейтральный и не медвежий.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Финальное резюме модуля</h3>
+      <ul>
+        <li>Используй scorecard: суммируй сигналы, смотри итоговое направление</li>
+        <li>CPI + FOMC + NFP — три главных события, остальное вторично</li>
+        <li>ETF Flow и Exchange Netflow — крипто-специфические опережающие индикаторы</li>
+        <li>Fear &amp; Greed: покупай в панике, фиксируй в эйфории</li>
+        <li>BTC Dominance: компас для распределения BTC vs альты</li>
+        <li>Перед данными — убирай плечо. Первые 15 минут — не торгуй. Входи после реакции</li>
+      </ul>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-title">🎉 Бонусный модуль пройден!</div>
+      <p>Теперь ты умеешь читать макроэкономику как трейдер: понимаешь, что делают ФРС и CPI с крипторынком, умеешь работать с on-chain данными, знаешь как готовиться к выходу важных отчётов и имеешь чёткую систему сигналов — когда лонг, когда шорт, когда кэш. Это не гарантия прибыли, но это разница между трейдингом и казино. Удачи! 🚀</p>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(4)">← Предыдущий</button><div></div></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+let currentLesson=1;
+function goToLesson(n){document.querySelectorAll('.lesson').forEach(l=>l.classList.remove('active'));document.getElementById('lesson-'+n).classList.add('active');document.querySelectorAll('.sidebar-item').forEach(item=>{const ln=parseInt(item.dataset.lesson);item.classList.remove('active');if(ln===n)item.classList.add('active');if(ln<n)item.classList.add('completed')});document.getElementById('progressFill').style.width=(n/5*100)+'%';document.getElementById('progressText').textContent=n+'/5';currentLesson=n;window.scrollTo({top:0,behavior:'smooth'});document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show')}
+function checkQuiz(id,btn,ok){const q=document.getElementById(id);const opts=q.querySelectorAll('.quiz-option');opts.forEach(o=>{o.style.pointerEvents='none';if(o!==btn)o.style.opacity='.5'});if(ok){btn.classList.add('correct');document.getElementById(id+'-correct').classList.add('show')}else{btn.classList.add('wrong');document.getElementById(id+'-wrong').classList.add('show');setTimeout(()=>{opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')){o.classList.add('correct');o.style.opacity='1'}})},800)}}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')}
+</script>
+</body>
+</html>

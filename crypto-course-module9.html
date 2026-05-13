@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRYPTO MIND — Модуль 9</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F0E8;--bg-card:#FFFDF8;--red:#D63031;--red-dark:#B71C1C;--red-light:#FFEBEE;--text:#2D2D2D;--text-light:#5A5A5A;--text-muted:#8A8A8A;--accent-teal:#00897B;--accent-blue:#1565C0;--accent-orange:#F57C00;--accent-purple:#6A1B9A;--border:#E0D8CC}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,232,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;color:var(--red);letter-spacing:3px;text-transform:uppercase}
+.nav-module{font-size:14px;color:var(--text-muted);font-weight:500}
+.nav-progress{display:flex;align-items:center;gap:8px}
+.nav-progress-bar{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.nav-progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width .5s ease}
+.nav-progress-text{font-size:12px;color:var(--text-muted);font-weight:600;font-family:'JetBrains Mono',monospace}
+.sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:40}.sidebar-overlay.show{display:block}
+.sidebar{position:fixed;left:0;top:64px;bottom:0;width:300px;background:var(--bg-card);border-right:1px solid var(--border);padding:30px 0;overflow-y:auto;z-index:50;transition:transform .3s ease}
+.sidebar-section-title{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding:0 24px;margin-bottom:16px}
+.sidebar-item{display:flex;align-items:flex-start;gap:14px;padding:14px 24px;cursor:pointer;transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;color:inherit}
+.sidebar-item:hover{background:rgba(214,48,49,.04)}.sidebar-item.active{background:rgba(214,48,49,.06);border-left-color:var(--red)}
+.sidebar-num{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--text-muted);min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg);flex-shrink:0}
+.sidebar-item.active .sidebar-num{background:var(--red);color:#fff}.sidebar-item.completed .sidebar-num{background:var(--accent-teal);color:#fff}
+.sidebar-item-text{font-size:13px;font-weight:500;line-height:1.5}.sidebar-item-text small{display:block;font-size:11px;color:var(--text-muted);font-weight:400;margin-top:2px}
+.main{margin-left:300px;padding-top:64px;min-height:100vh}
+.lesson{display:none;animation:fadeIn .4s ease}.lesson.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.lesson-hero{padding:80px 60px 60px;position:relative;overflow:hidden}
+.lesson-hero.tokenomics{background:linear-gradient(135deg,#1565C0,#0D47A1)}
+.lesson-hero.team{background:linear-gradient(135deg,#6A1B9A,#4A148C)}
+.lesson-hero.roadmap{background:linear-gradient(135deg,#F57C00,#E65100)}
+.lesson-hero.evaluation{background:linear-gradient(135deg,#2E7D32,#1B5E20)}
+.lesson-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:400px;height:400px;background:rgba(255,255,255,.04);border-radius:50%}
+.lesson-hero .module-tag{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;position:relative;z-index:1}
+.lesson-hero h1{font-family:'Oswald',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:700;color:#fff;text-transform:uppercase;line-height:1.1;letter-spacing:-1px;position:relative;z-index:1;max-width:700px}
+.lesson-hero .lesson-number{font-family:'Oswald',sans-serif;font-size:160px;font-weight:700;color:rgba(255,255,255,.08);position:absolute;right:60px;bottom:-20px;line-height:1}
+.lesson-body{max-width:820px;padding:50px 60px 80px}
+.lesson-body h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;color:var(--red);text-transform:uppercase;margin:50px 0 20px;letter-spacing:.5px}
+.lesson-body h2:first-child{margin-top:0}
+.lesson-body h3{font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;color:var(--text);margin:35px 0 14px}
+.lesson-body p{font-size:16px;margin-bottom:18px;color:var(--text);line-height:1.8}
+.lesson-body strong{color:var(--red-dark);font-weight:600}
+.analogy{background:linear-gradient(135deg,#FFF8E1,#FFFDE7);border-left:4px solid #FFB300;border-radius:0 12px 12px 0;padding:24px 28px;margin:28px 0;position:relative}
+.analogy::before{content:'💡';font-size:20px;position:absolute;top:-10px;left:-14px;background:var(--bg);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.analogy-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#F57F17;margin-bottom:8px}
+.analogy p{font-size:15px;color:#5D4037;margin-bottom:0}
+.key-point{background:var(--red-light);border-radius:12px;padding:24px 28px;margin:28px 0;border:1px solid rgba(214,48,49,.15)}
+.key-point-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:8px}
+.key-point p{font-size:15px;color:var(--red-dark);margin-bottom:0}
+.info-block{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;margin:28px 0;position:relative;overflow:hidden}
+.info-block h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.info-block p,.info-block li{font-size:15px;position:relative;z-index:1}
+.info-block ul{list-style:none;padding:0}
+.info-block ul li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid var(--border)}
+.info-block ul li:last-child{border-bottom:none}
+.info-block ul li::before{content:'→';color:var(--red);font-weight:700;position:absolute;left:0}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0}
+.comparison-col{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.comparison-col h4{font-family:'Oswald',sans-serif;font-size:16px;margin-bottom:12px;color:var(--text)}
+.comparison-col p{font-size:14px;margin-bottom:8px}
+.svg-container{margin:32px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;overflow:hidden}
+.svg-container svg{width:100%;height:auto;display:block}
+.svg-caption{text-align:center;font-size:13px;color:var(--text-muted);margin-top:12px;font-style:italic}
+.summary-box{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border:1px solid #A5D6A7;border-radius:12px;padding:28px;margin:40px 0 28px}
+.summary-box h3{font-family:'Oswald',sans-serif;font-size:18px;color:#2E7D32;margin:0 0 14px}
+.summary-box ul{list-style:none;padding:0}
+.summary-box ul li{padding:6px 0 6px 24px;position:relative;font-size:15px}
+.summary-box ul li::before{content:'✓';color:#2E7D32;font-weight:700;position:absolute;left:0}
+.data-table{width:100%;border-collapse:separate;border-spacing:0;margin:28px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.data-table thead{background:var(--red)}
+.data-table th{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;color:#fff;padding:14px 16px;text-transform:uppercase;letter-spacing:1px;text-align:left}
+.data-table td{padding:12px 16px;font-size:14px;border-bottom:1px solid var(--border);background:var(--bg-card)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .label-cell{font-weight:600;font-size:13px;color:var(--text-light);width:160px}
+.lesson-nav{display:flex;justify-content:space-between;gap:16px;padding:40px 0 0;border-top:1px solid var(--border);margin-top:40px}
+.btn{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;padding:14px 32px;border-radius:8px;border:none;cursor:pointer;transition:all .25s ease;text-transform:uppercase;letter-spacing:1px}
+.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 4px 20px rgba(214,48,49,.3)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg);border-color:var(--text-muted)}
+.quiz{background:var(--bg-card);border:2px solid var(--border);border-radius:12px;padding:32px;margin:32px 0}
+.quiz h4{font-family:'Oswald',sans-serif;font-size:18px;color:var(--red);margin-bottom:6px}
+.quiz .quiz-question{font-size:16px;color:var(--text);margin-bottom:20px;line-height:1.6;font-weight:500}
+.quiz-option{display:block;width:100%;text-align:left;background:var(--bg);border:2px solid var(--border);color:var(--text);padding:14px 20px;border-radius:10px;margin-bottom:10px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:15px;line-height:1.5;transition:all .2s ease}
+.quiz-option:hover{background:#EDE8DD;border-color:var(--text-muted)}
+.quiz-option.correct{background:#E8F5E9;border-color:#4CAF50;color:#2E7D32;font-weight:600}
+.quiz-option.wrong{background:#FFEBEE;border-color:#EF5350;color:#C62828}
+.quiz-feedback{margin-top:16px;font-size:15px;padding:14px 18px;border-radius:10px;display:none;line-height:1.6}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+.quiz-feedback.wrong{background:#FFF3E0;color:#E65100;border:1px solid #FFCC80}
+.danger-block{background:#FFEBEE;border:2px solid #EF5350;border-radius:12px;padding:28px;margin:28px 0}
+.danger-block h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:12px;color:#C62828}
+.danger-block p,.danger-block li{font-size:15px;color:#B71C1C}
+.danger-block ul{list-style:none;padding:0}
+.danger-block ul li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid rgba(239,83,80,.2)}
+.danger-block ul li:last-child{border-bottom:none}
+.danger-block ul li::before{content:'⚠️';position:absolute;left:0;font-size:13px}
+.safe-block{background:#E8F5E9;border:2px solid #66BB6A;border-radius:12px;padding:28px;margin:28px 0}
+.safe-block h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:12px;color:#2E7D32}
+.safe-block p,.safe-block li{font-size:15px;color:#1B5E20}
+.safe-block ul{list-style:none;padding:0}
+.safe-block ul li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid rgba(102,187,106,.3)}
+.safe-block ul li:last-child{border-bottom:none}
+.safe-block ul li::before{content:'✅';position:absolute;left:0;font-size:13px}
+.checklist{background:linear-gradient(135deg,#E3F2FD,#E8EAF6);border:2px solid #42A5F5;border-radius:12px;padding:28px;margin:28px 0}
+.checklist h4{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:14px;color:#1565C0}
+.checklist .check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(66,165,245,.15)}
+.checklist .check-item:last-child{border-bottom:none}
+.checklist .check-box{width:22px;height:22px;border:2px solid #42A5F5;border-radius:5px;flex-shrink:0;margin-top:2px}
+.checklist .check-text{font-size:14px;color:#0D47A1;line-height:1.5}
+.menu-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);padding:4px}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);width:280px}.sidebar.open{transform:translateX(0);box-shadow:4px 0 30px rgba(0,0,0,.15)}
+  .main{margin-left:0}.lesson-hero{padding:60px 28px 40px}.lesson-body{padding:30px 28px 60px}
+  .menu-toggle{display:block}.comparison{grid-template-columns:1fr}.lesson-hero .lesson-number{font-size:100px;right:20px}
+}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div style="display:flex;align-items:center;gap:16px"><button class="menu-toggle" onclick="toggleSidebar()">☰</button><span class="nav-brand">Crypto Mind</span></div>
+  <span class="nav-module">Модуль 9 — Фундаментальный анализ</span>
+  <div class="nav-progress"><div class="nav-progress-bar"><div class="nav-progress-fill" id="progressFill" style="width:25%"></div></div><span class="nav-progress-text" id="progressText">1/4</span></div>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section-title">Модуль 9 · Анализ проектов</div>
+  <a class="sidebar-item active" data-lesson="1" onclick="goToLesson(1)"><span class="sidebar-num">27</span><span class="sidebar-item-text">Токеномика<small>Эмиссия, распределение, утилитарность</small></span></a>
+  <a class="sidebar-item" data-lesson="2" onclick="goToLesson(2)"><span class="sidebar-num">28</span><span class="sidebar-item-text">Команда проекта<small>Кто стоит за токеном</small></span></a>
+  <a class="sidebar-item" data-lesson="3" onclick="goToLesson(3)"><span class="sidebar-num">29</span><span class="sidebar-item-text">Roadmap<small>План развития и его выполнение</small></span></a>
+  <a class="sidebar-item" data-lesson="4" onclick="goToLesson(4)"><span class="sidebar-num">30</span><span class="sidebar-item-text">Оценка проекта<small>Чек-лист перед инвестицией</small></span></a>
+  <div style="padding:24px;margin-top:20px;border-top:1px solid var(--border)">
+    <div class="sidebar-section-title" style="padding:0;margin-bottom:12px">Все модули</div>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.6">
+      <a href="crypto-course-module1.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М1 · Введение</a>
+      <a href="crypto-course-module2.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М2 · Bitcoin, Ethereum, токены</a>
+      <a href="crypto-course-module3.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М3 · Виды криптоактивов</a>
+      <a href="crypto-course-module4.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М4 · Рынок и биржи</a>
+      <a href="crypto-course-module5.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М5 · Безопасность</a>
+      <a href="crypto-course-module6.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М6 · Покупка и MetaMask</a>
+      <a href="crypto-course-module7.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М7 · Основы трейдинга</a>
+      <a href="crypto-course-module8.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--accent-teal)">✓</span> М8 · Технический анализ</a>
+      <a href="crypto-course-module9.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''"><span style="color:var(--red)">●</span> М9 · Фундаментальный анализ</a>
+      <a href="crypto-course-module10.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">М10 · DeFi</a>
+      <a href="crypto-course-module11.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">М11 · Психология и циклы</a>
+      <a href="crypto-course-module12.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">М12 · Smart Money Concepts</a>
+      <a href="crypto-course-bonus-fintech.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">Бонус · Крипто-финтех</a>
+      <a href="crypto-course-bonus-macrodata.html" style="color:inherit;text-decoration:none;display:block;padding:2px 0;border-radius:3px;transition:color .2s" onmouseover="this.style.color='#D63031'" onmouseout="this.style.color=''">Бонус · Макро-данные</a>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- ===== LESSON 1: ТОКЕНОМИКА ===== -->
+<div class="lesson active" id="lesson-1">
+  <div class="lesson-hero tokenomics"><div class="module-tag">Модуль 09 · Урок 27</div><h1>Токеномика: ДНК проекта</h1><div class="lesson-number">(27)</div></div>
+  <div class="lesson-body">
+
+    <h2>Что такое фундаментальный анализ</h2>
+    <p>Если технический анализ — это <strong>«куда движется цена»</strong>, то фундаментальный — это <strong>«стоит ли проект своих денег»</strong>. ТА работает на коротких дистанциях. ФА — на длинных.</p>
+
+    <p>Ты можешь идеально торговать графиком плохого проекта и зарабатывать на колебаниях. Но если хочешь <strong>держать монету год-два</strong> и видеть рост в десятки раз — нужно понимать сам проект. И начинается всё с токеномики.</p>
+
+    <h2>Что такое токеномика</h2>
+    <p>Токеномика (tokenomics) = <strong>token + economics</strong>. Это экономическая модель токена: сколько его всего, как он распределяется, кому принадлежит, как меняется со временем. По сути — финансовое «устройство» проекта.</p>
+
+    <div class="analogy">
+      <div class="analogy-title">Аналогия</div>
+      <p>Токеномика — это как <strong>устройство акций компании</strong>. Сколько акций выпустила компания? Кому они принадлежат? Будут ли выпускать ещё? Платят ли дивиденды? Без понимания этого ты покупаешь «кота в мешке». Можешь приобрести «акцию», у которой 90% уже принадлежит основателям — и они в любой момент могут всё продать.</p>
+    </div>
+
+    <h2>Три ключевых параметра предложения</h2>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="28" font-family="Oswald, sans-serif" font-size="15" fill="#2D2D2D" text-anchor="middle" font-weight="600">SUPPLY: ТРИ ВАЖНЫЕ МЕТРИКИ</text>
+
+        <!-- Total Supply -->
+        <rect x="30" y="60" width="200" height="190" rx="14" fill="#FFF3E0" stroke="#F57C00" stroke-width="2"/>
+        <text x="130" y="88" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#E65100" font-weight="600">MAX SUPPLY</text>
+        <text x="130" y="104" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">Максимум токенов</text>
+
+        <text x="130" y="146" font-family="Montserrat, sans-serif" font-size="32" text-anchor="middle">🔢</text>
+
+        <text x="130" y="186" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#E65100" font-weight="600">21M (BTC)</text>
+        <text x="130" y="204" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">Сколько монет МОЖЕТ</text>
+        <text x="130" y="220" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">существовать НИКОГДА</text>
+        <text x="130" y="238" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#8A8A8A">(абсолютный потолок)</text>
+
+        <!-- Total Supply -->
+        <rect x="260" y="60" width="200" height="190" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <text x="360" y="88" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#1565C0" font-weight="600">TOTAL SUPPLY</text>
+        <text x="360" y="104" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">Уже выпущено</text>
+
+        <text x="360" y="146" font-family="Montserrat, sans-serif" font-size="32" text-anchor="middle">📊</text>
+
+        <text x="360" y="186" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#1565C0" font-weight="600">19.7M (BTC)</text>
+        <text x="360" y="204" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">Сколько монет уже</text>
+        <text x="360" y="220" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">создано в блокчейне</text>
+        <text x="360" y="238" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#8A8A8A">(включая залоченные)</text>
+
+        <!-- Circulating Supply -->
+        <rect x="490" y="60" width="200" height="190" rx="14" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+        <text x="590" y="88" font-family="Oswald, sans-serif" font-size="13" text-anchor="middle" fill="#2E7D32" font-weight="600">CIRCULATING SUPPLY</text>
+        <text x="590" y="104" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#8A8A8A">В обороте</text>
+
+        <text x="590" y="146" font-family="Montserrat, sans-serif" font-size="32" text-anchor="middle">💵</text>
+
+        <text x="590" y="186" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#2E7D32" font-weight="600">19.7M (BTC)</text>
+        <text x="590" y="204" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">Доступно на рынке</text>
+        <text x="590" y="220" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#5A5A5A">прямо сейчас</text>
+        <text x="590" y="238" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#8A8A8A">(ИМЕННО ЭТО двигает цену)</text>
+      </svg>
+      <div class="svg-caption">Max ≥ Total ≥ Circulating. Цена реагирует на изменения именно Circulating Supply</div>
+    </div>
+
+    <h2>Распределение токенов (Distribution)</h2>
+    <p>Это самая важная часть. Спроси себя: <strong>кто владеет токенами проекта прямо сейчас?</strong> Если 60% токенов у команды и инвесторов — это «бомба замедленного действия». В любой момент они могут начать продавать.</p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="28" font-family="Oswald, sans-serif" font-size="15" fill="#2D2D2D" text-anchor="middle" font-weight="600">ХОРОШЕЕ vs ПЛОХОЕ РАСПРЕДЕЛЕНИЕ</text>
+
+        <!-- Good distribution -->
+        <text x="180" y="60" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#2E7D32" font-weight="600">✅ ЗДОРОВОЕ</text>
+
+        <!-- Pie chart 1 - good -->
+        <circle cx="180" cy="170" r="80" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+        <!-- 60% Public/Community -->
+        <path d="M180,170 L180,90 A80,80 0 0,1 254,202 z" fill="#2E7D32"/>
+        <!-- 20% Team -->
+        <path d="M180,170 L254,202 A80,80 0 0,1 145,243 z" fill="#66BB6A"/>
+        <!-- 15% Investors -->
+        <path d="M180,170 L145,243 A80,80 0 0,1 105,128 z" fill="#A5D6A7"/>
+        <!-- 5% Treasury -->
+        <path d="M180,170 L105,128 A80,80 0 0,1 180,90 z" fill="#C8E6C9"/>
+
+        <!-- Labels -->
+        <text x="180" y="265" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#2E7D32" font-weight="600">60% Community / Public</text>
+        <text x="180" y="282" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">20% Team · 15% Investors · 5% Treasury</text>
+
+        <!-- Bad distribution -->
+        <text x="540" y="60" font-family="Oswald, sans-serif" font-size="14" text-anchor="middle" fill="#D63031" font-weight="600">❌ ОПАСНОЕ</text>
+
+        <!-- Pie chart 2 - bad -->
+        <circle cx="540" cy="170" r="80" fill="#FFEBEE" stroke="#D63031" stroke-width="2"/>
+        <!-- 50% Team -->
+        <path d="M540,170 L540,90 A80,80 0 0,1 540,250 z" fill="#D63031"/>
+        <!-- 30% Investors -->
+        <path d="M540,170 L540,250 A80,80 0 0,1 470,128 z" fill="#EF5350"/>
+        <!-- 15% Pre-sale -->
+        <path d="M540,170 L470,128 A80,80 0 0,1 530,91 z" fill="#FFCDD2"/>
+        <!-- 5% Public -->
+        <path d="M540,170 L530,91 A80,80 0 0,1 540,90 z" fill="#FFE0E0"/>
+
+        <text x="540" y="265" font-family="Montserrat, sans-serif" font-size="10" text-anchor="middle" fill="#D63031" font-weight="600">50% Team · 30% VC Investors</text>
+        <text x="540" y="282" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">15% Pre-sale · 5% всё, что досталось людям</text>
+
+        <text x="360" y="312" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#8A8A8A" font-style="italic">Если 70%+ у инсайдеров — они контролируют судьбу токена</text>
+      </svg>
+      <div class="svg-caption">Здоровое распределение — большая часть в руках сообщества, не у команды</div>
+    </div>
+
+    <h2>Vesting и unlock-расписание</h2>
+    <p><strong>Vesting</strong> — это график, по которому токены команды и инвесторов «разблокируются» постепенно. Например: 25% разблокируется через год, потом по 1/36 каждый месяц следующие 3 года. Это защита от того, чтобы основатели не «слили» все свои токены сразу после листинга.</p>
+
+    <p><strong>Unlock</strong> — это конкретные даты разблокировки. Когда крупный unlock приближается — на рынок выходит большой объём токенов, и цена часто падает (потому что инсайдеры начинают продавать).</p>
+
+    <div class="key-point">
+      <div class="key-point-title">Практический совет</div>
+      <p>Перед покупкой токена ВСЕГДА проверяй расписание unlock на сайтах вроде <strong>tokenomist.ai</strong> или <strong>cryptorank.io</strong>. Если через 2 месяца разблокировка 30% от циркуляции — жди серьёзного падения цены и подожди с покупкой.</p>
+    </div>
+
+    <h2>Inflation vs Deflation</h2>
+    <p>Токены делятся на две большие категории по динамике предложения:</p>
+
+    <div class="comparison">
+      <div class="comparison-col" style="border-color:#D63031;border-width:2px">
+        <h4>📈 Инфляционные токены</h4>
+        <p style="font-size:13px;color:var(--text-light)">Эмиссия растёт со временем (бесконечная или большая). Чтобы цена росла, спрос должен опережать новую эмиссию.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Пример: ETH (нет лимита, но низкая эмиссия), DOGE (5 млрд новых в год)</p>
+      </div>
+      <div class="comparison-col" style="border-color:#2E7D32;border-width:2px">
+        <h4>📉 Дефляционные токены</h4>
+        <p style="font-size:13px;color:var(--text-light)">Предложение фиксировано или сокращается (через сжигание — burn). Дефицит растёт со временем.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Пример: BTC (21M лимит), BNB (регулярный burn)</p>
+      </div>
+    </div>
+
+    <h2>Утилитарность токена (Utility)</h2>
+    <p>Зачем вообще нужен этот токен? Если у тебя нет хорошего ответа — это <strong>красный флаг</strong>. Множество проектов выпускают токены просто потому, что «так модно», без реальной функции.</p>
+
+    <div class="info-block">
+      <h4>Хорошая утилитарность:</h4>
+      <ul>
+        <li><strong>Оплата комиссий.</strong> ETH для Ethereum, BNB для BNB Chain — без них сеть не работает</li>
+        <li><strong>Стейкинг с реальной доходностью.</strong> Не «сжигание» эмиссии, а доход от комиссий протокола</li>
+        <li><strong>Голосование (governance).</strong> Реальное влияние на развитие проекта</li>
+        <li><strong>Доступ к продукту.</strong> LINK для оракулов Chainlink, FIL для хранения файлов</li>
+        <li><strong>Доля в прибыли.</strong> Часть комиссий протокола идёт держателям токена</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz1">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">Проект выпустил токен с распределением: 60% — команда (vesting 6 месяцев), 30% — фонд, 10% — публичная продажа. Что ты подумаешь?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Отлично, у команды большой стимул развивать проект</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,true)">Опасно — 90% у инсайдеров, через 6 месяцев их разблокировка может обвалить цену</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Распределение не важно — главное, чтобы токен был полезным</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">Это нормальное распределение для всех проектов</button>
+      <div class="quiz-feedback correct" id="quiz1-correct">Верно! Когда инсайдеры (команда + фонд) контролируют 90%, у них «короткий поводок» из vesting на 6 месяцев. После разблокировки цена с большой вероятностью упадёт. Покупать такие токены — высокий риск.</div>
+      <div class="quiz-feedback wrong" id="quiz1-wrong">Не совсем. Когда инсайдеры держат 90% токенов — они контролируют рынок. Их разблокировка через 6 месяцев = огромное предложение → цена падает. Так устроены большинство pump-and-dump схем.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме урока</h3>
+      <ul>
+        <li>Токеномика = экономическое устройство токена (предложение, распределение, утилитарность)</li>
+        <li>Max Supply (потолок), Total Supply (уже выпущено), Circulating Supply (в обороте)</li>
+        <li>Здоровое распределение — большая часть у сообщества, не у команды</li>
+        <li>Vesting и unlock-расписание — критично проверять перед покупкой</li>
+        <li>Дефляционные токены имеют преимущество в долгосрок (BTC, BNB)</li>
+        <li>У токена должна быть реальная утилитарность, а не «вот так просто»</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><div></div><button class="btn btn-primary" onclick="goToLesson(2)">Далее: Команда проекта →</button></div>
+  </div>
+</div>
+
+<!-- ===== LESSON 2: КОМАНДА ===== -->
+<div class="lesson" id="lesson-2">
+  <div class="lesson-hero team"><div class="module-tag">Модуль 09 · Урок 28</div><h1>Команда проекта: кто стоит за токеном</h1><div class="lesson-number">(28)</div></div>
+  <div class="lesson-body">
+
+    <h2>За каждым проектом стоят люди</h2>
+    <p>Технология — это код. Но код пишут люди. Команда — это <strong>самый важный актив</strong> крипто-проекта. Хорошая команда может вытянуть слабую идею. Плохая — провалит даже гениальную.</p>
+
+    <p>В традиционных финансах ты инвестируешь в компанию — там есть директора, советы, годовые отчёты. В крипте часто проект делают 5–10 человек, и от их решений зависит судьба сотен миллионов долларов. Поэтому проверять команду — обязательно.</p>
+
+    <div class="analogy">
+      <div class="analogy-title">Аналогия</div>
+      <p>Покупать токен, не зная команду — это как <strong>отдавать деньги в управление человеку с улицы</strong>. Может, он гений. А может, через месяц исчезнет с твоими сбережениями. В крипте таких случаев тысячи (это называется «rug pull»). Проверка команды — твоя страховка.</p>
+    </div>
+
+    <h2>Public team vs Anonymous team</h2>
+
+    <div class="comparison">
+      <div class="comparison-col" style="border-color:#2E7D32;border-width:2px">
+        <h4>👤 Публичная команда (DOXED)</h4>
+        <p style="font-size:13px;color:var(--text-light)">Реальные имена, фото, LinkedIn, публичные выступления. Можно проверить опыт и репутацию.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Примеры: Ethereum, Solana, Aave, Uniswap</p>
+      </div>
+      <div class="comparison-col" style="border-color:#D63031;border-width:2px">
+        <h4>🎭 Анонимная команда</h4>
+        <p style="font-size:13px;color:var(--text-light)">Псевдонимы, аватары вместо лиц. Высокий риск — некому отвечать, если проект исчезнет.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Иногда оправдано (например, Bitcoin), но в большинстве случаев — красный флаг</p>
+      </div>
+    </div>
+
+    <p>Анонимность не всегда плохо. <strong>Сатоши Накамото</strong> остался анонимом — и это часть философии Bitcoin. Но в большинстве современных проектов анонимность означает: <strong>«мы не хотим отвечать за свои действия»</strong>. Это серьёзный риск.</p>
+
+    <h2>Что проверять в команде</h2>
+
+    <div class="info-block">
+      <h4>Чек-лист по команде:</h4>
+      <ul>
+        <li><strong>Опыт основателей.</strong> Что они делали до этого проекта? Успешные ли были предыдущие проекты?</li>
+        <li><strong>LinkedIn-профили.</strong> Реальные ли это люди? Совпадает ли биография с тем, что заявлено на сайте?</li>
+        <li><strong>Технический бэкграунд.</strong> Есть ли в команде опытные разработчики? Где они работали раньше?</li>
+        <li><strong>Публичная активность.</strong> Выступают ли на конференциях? Делают ли AMA (вопросы-ответы)? Активны ли в соцсетях?</li>
+        <li><strong>GitHub.</strong> Есть ли реальный код? Регулярные ли коммиты? Кто их делает?</li>
+        <li><strong>Прошлые проекты.</strong> Если основатель уже делал проекты, которые закрылись — это тревожный сигнал</li>
+        <li><strong>Связи с скам-проектами.</strong> Поищи в Google «имя + scam» — иногда всплывают неприятные истории</li>
+      </ul>
+    </div>
+
+    <h2>Известные мошенники: чему они учат</h2>
+
+    <div class="danger-block">
+      <h4>Громкие случаи последних лет:</h4>
+      <ul>
+        <li><strong>Do Kwon (Terra/Luna)</strong> — был «звездой» крипты, но его алгоритмический стейблкоин UST рухнул в мае 2022. Уничтожено $40 млрд. Арестован, ждёт суда</li>
+        <li><strong>Sam Bankman-Fried (FTX)</strong> — основатель крупнейшей биржи и «лицо» отрасли. В 2022 FTX обанкротилась, выяснилось — он использовал деньги клиентов. Получил 25 лет тюрьмы</li>
+        <li><strong>Анонимные основатели Squid Game Token</strong> — провели «rug pull» на $3 млн в 2021. Их так и не нашли</li>
+      </ul>
+      <p style="margin-top:12px;color:#B71C1C"><strong>Урок:</strong> даже «звёздный» статус — не гарантия. Но анонимность и отсутствие проверяемого бэкграунда — почти гарантия проблем.</p>
+    </div>
+
+    <h2>Бэкеры и инвесторы (Backers)</h2>
+    <p>Инвесторы проекта — это сигнал доверия. Если в проект вложились крупные венчурные фонды — они провели свой due diligence (проверку), и это снижает риск scam'а. Но это не гарантия успеха!</p>
+
+    <div class="info-block">
+      <h4>Топовые крипто-VC, которым стоит доверять:</h4>
+      <ul>
+        <li><strong>a16z (Andreessen Horowitz)</strong> — один из самых влиятельных фондов. Инвестировали в Coinbase, Uniswap, OpenSea</li>
+        <li><strong>Paradigm</strong> — топовый крипто-фонд. Поддержали Uniswap, dYdX, Optimism</li>
+        <li><strong>Pantera Capital</strong> — старейший крипто-фонд (с 2013 года)</li>
+        <li><strong>Sequoia Capital</strong> — легендарный венчурный фонд (Google, Apple), активно инвестирует в крипту</li>
+        <li><strong>Coinbase Ventures, Binance Labs</strong> — фонды бирж. Часто инвестируют в проекты, которые потом листятся на их платформах</li>
+      </ul>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-title">Важно</div>
+      <p>Однако крупные VC сами могут «слить» свои токены после разблокировки. Ищи проекты, где VC получили токены с длинным vesting (2–4 года). Это значит, они верят в долгосрок и не убегут с деньгами через месяц после листинга.</p>
+    </div>
+
+    <h2>Сообщество (Community)</h2>
+    <p>Кроме команды важно сообщество вокруг проекта. Активное сообщество — признак того, что проект живой:</p>
+
+    <div class="info-block">
+      <h4>Где смотреть:</h4>
+      <ul>
+        <li><strong>Discord/Telegram.</strong> Сколько активных пользователей? О чём говорят — о технологии или только о цене?</li>
+        <li><strong>Twitter/X.</strong> Сколько реальных подписчиков? Какие посты? Кто их репостит?</li>
+        <li><strong>Reddit.</strong> Есть ли сабреддит? Качество дискуссий?</li>
+        <li><strong>Github Stars.</strong> Сколько разработчиков «звёздят» репозиторий?</li>
+      </ul>
+      <p style="margin-top:12px"><strong>Красный флаг:</strong> сообщество, в котором обсуждают только цену и кричат «WAGMI / TO THE MOON». Это значит, что технологии в проекте может быть не очень.</p>
+    </div>
+
+    <div class="quiz" id="quiz2">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">Проект A: команда анонимна, но обещает x100. Проект B: публичная команда с опытом, но скучный долгосрочный план. Куда инвестировать?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">В A — потенциал x100 важнее</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,true)">В B — анонимность + завышенные обещания = классический скам-паттерн</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">В оба поровну — диверсификация</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">В A, но с маленькой суммой</button>
+      <div class="quiz-feedback correct" id="quiz2-correct">Верно! Анонимная команда + обещание x100 — это шаблон скама. Серьёзные проекты не обещают конкретную доходность. Публичная команда с опытом — это страховка: они хотя бы рискуют репутацией.</div>
+      <div class="quiz-feedback wrong" id="quiz2-wrong">Опасный выбор. Когда анонимы обещают x100 — это либо неопытные мечтатели, либо мошенники. В обоих случаях — высокий шанс потерять всё.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме урока</h3>
+      <ul>
+        <li>Команда — главный актив проекта. Без команды нет проекта</li>
+        <li>Публичная команда (doxed) — гораздо безопаснее анонимной</li>
+        <li>Проверяй: опыт, LinkedIn, GitHub, прошлые проекты, активность в публичном поле</li>
+        <li>Топовые VC (a16z, Paradigm) — позитивный сигнал, но не гарантия</li>
+        <li>Активное сообщество, обсуждающее технологию (а не только цену) — хороший знак</li>
+        <li>Запомни истории FTX, Luna — даже «звёзды» могут оказаться мошенниками</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(1)">← Предыдущий</button><button class="btn btn-primary" onclick="goToLesson(3)">Далее: Roadmap →</button></div>
+  </div>
+</div>
+
+<!-- ===== LESSON 3: ROADMAP ===== -->
+<div class="lesson" id="lesson-3">
+  <div class="lesson-hero roadmap"><div class="module-tag">Модуль 09 · Урок 29</div><h1>Roadmap: план развития проекта</h1><div class="lesson-number">(29)</div></div>
+  <div class="lesson-body">
+
+    <h2>Что такое roadmap</h2>
+    <p>Roadmap (дорожная карта) — это <strong>публичный план развития проекта</strong> по этапам и срокам. Что команда планирует выпустить в следующем квартале? Через год? Какие интеграции? Какие крупные обновления?</p>
+
+    <p>Это не просто маркетинговая бумажка. Это <strong>обещания, которые можно проверить</strong>. И главное в roadmap — не то, что обещано, а то, <strong>как команда выполняет обещанное</strong>.</p>
+
+    <div class="analogy">
+      <div class="analogy-title">Аналогия</div>
+      <p>Roadmap — это как <strong>резюме строителя</strong>. Один говорит: «Построю тебе дом за 6 месяцев». Другой показывает 10 уже построенных домов и говорит: «Вот мои сроки — обычно укладываюсь». Ты выберешь второго. В крипте то же самое: важна история выполнения обещаний.</p>
+    </div>
+
+    <h2>Структура хорошего roadmap</h2>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <text x="360" y="28" font-family="Oswald, sans-serif" font-size="15" fill="#2D2D2D" text-anchor="middle" font-weight="600">ПРИМЕР ХОРОШЕГО ROADMAP</text>
+
+        <!-- Timeline -->
+        <line x1="80" y1="180" x2="640" y2="180" stroke="#E0D8CC" stroke-width="3"/>
+
+        <!-- Q1 - completed -->
+        <circle cx="140" cy="180" r="14" fill="#2E7D32" stroke="#fff" stroke-width="3"/>
+        <text x="140" y="185" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">✓</text>
+        <rect x="80" y="80" width="120" height="68" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="140" y="100" font-family="Oswald, sans-serif" font-size="11" text-anchor="middle" fill="#2E7D32" font-weight="600">Q1 2025</text>
+        <text x="140" y="118" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Запуск mainnet</text>
+        <text x="140" y="132" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Листинг на Binance</text>
+        <text x="140" y="148" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#2E7D32" font-weight="600">✓ ВЫПОЛНЕНО</text>
+
+        <!-- Q2 - completed -->
+        <circle cx="270" cy="180" r="14" fill="#2E7D32" stroke="#fff" stroke-width="3"/>
+        <text x="270" y="185" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">✓</text>
+        <rect x="210" y="200" width="120" height="68" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="270" y="220" font-family="Oswald, sans-serif" font-size="11" text-anchor="middle" fill="#2E7D32" font-weight="600">Q2 2025</text>
+        <text x="270" y="238" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Mobile-кошелёк</text>
+        <text x="270" y="252" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Аудит кода (CertiK)</text>
+        <text x="270" y="266" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#2E7D32" font-weight="600">✓ ВЫПОЛНЕНО</text>
+
+        <!-- Q3 - in progress -->
+        <circle cx="400" cy="180" r="14" fill="#F57C00" stroke="#fff" stroke-width="3"/>
+        <text x="400" y="186" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">●</text>
+        <rect x="340" y="80" width="120" height="68" rx="8" fill="#FFF3E0" stroke="#F57C00" stroke-width="1.5"/>
+        <text x="400" y="100" font-family="Oswald, sans-serif" font-size="11" text-anchor="middle" fill="#E65100" font-weight="600">Q3 2025</text>
+        <text x="400" y="118" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Cross-chain bridge</text>
+        <text x="400" y="132" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Партнёрство с Aave</text>
+        <text x="400" y="148" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#E65100" font-weight="600">⏳ В РАБОТЕ</text>
+
+        <!-- Q4 - planned -->
+        <circle cx="530" cy="180" r="14" fill="#9E9E9E" stroke="#fff" stroke-width="3"/>
+        <rect x="470" y="200" width="120" height="68" rx="8" fill="#F5F5F5" stroke="#9E9E9E" stroke-width="1.5"/>
+        <text x="530" y="220" font-family="Oswald, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A" font-weight="600">Q4 2025</text>
+        <text x="530" y="238" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Запуск DAO</text>
+        <text x="530" y="252" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Governance-токен</text>
+        <text x="530" y="266" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#5A5A5A" font-weight="600">📅 ПЛАНЫ</text>
+
+        <!-- Q1 2026 -->
+        <circle cx="620" cy="180" r="14" fill="#9E9E9E" stroke="#fff" stroke-width="3"/>
+        <rect x="560" y="80" width="120" height="68" rx="8" fill="#F5F5F5" stroke="#9E9E9E" stroke-width="1.5"/>
+        <text x="620" y="100" font-family="Oswald, sans-serif" font-size="11" text-anchor="middle" fill="#5A5A5A" font-weight="600">Q1 2026</text>
+        <text x="620" y="118" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Layer 2 интеграция</text>
+        <text x="620" y="132" font-family="Montserrat, sans-serif" font-size="9" text-anchor="middle" fill="#5A5A5A">Институциональный API</text>
+        <text x="620" y="148" font-family="Montserrat, sans-serif" font-size="8" text-anchor="middle" fill="#5A5A5A" font-weight="600">📅 ПЛАНЫ</text>
+
+        <text x="370" y="305" font-family="Montserrat, sans-serif" font-size="11" text-anchor="middle" fill="#8A8A8A" font-style="italic">Хороший roadmap: конкретные цели, реальные сроки, отметка о выполнении</text>
+      </svg>
+      <div class="svg-caption">Хороший roadmap показывает прошлое, настоящее и будущее с конкретикой</div>
+    </div>
+
+    <h2>Что должно быть в roadmap</h2>
+
+    <div class="safe-block">
+      <h4>Признаки хорошего roadmap:</h4>
+      <ul>
+        <li>Конкретные цели с привязкой к датам (квартал/месяц)</li>
+        <li>Технические задачи (запуск продукта, интеграции, аудит) — не только маркетинг</li>
+        <li>История выполненных пунктов с датами фактического завершения</li>
+        <li>Прозрачные обновления: если что-то откладывается — есть объяснение</li>
+        <li>Реалистичные сроки (не «всё за 3 месяца»)</li>
+        <li>Связь с токеномикой (например, запуск стейкинга в Q3)</li>
+      </ul>
+    </div>
+
+    <div class="danger-block">
+      <h4>Признаки плохого roadmap:</h4>
+      <ul>
+        <li>Только маркетинговые «вехи»: «Партнёрство с Х», «Листинг на Y» (без технического содержания)</li>
+        <li>Сроки типа «когда-нибудь», «соон™», «Q4 без года»</li>
+        <li>Нет истории выполненных задач — невозможно проверить, что они делали раньше</li>
+        <li>Обещания «революции» без понимания, что именно делают</li>
+        <li>Roadmap не обновлялся месяцами — проект может быть «мёртв»</li>
+        <li>Чрезмерные обещания: «Mainnet, mobile-app, DEX и метавселенная — за квартал»</li>
+      </ul>
+    </div>
+
+    <h2>Как проверять выполнение</h2>
+    <p>Зайди на сайт проекта и открой их roadmap год назад. Что они обещали в прошлом году? Что выполнено? Что нет? Это лучший индикатор будущего поведения.</p>
+
+    <div class="info-block">
+      <h4>Где искать архивные roadmap:</h4>
+      <ul>
+        <li><strong>Wayback Machine</strong> (web.archive.org) — посмотри версию сайта проекта 6–12 месяцев назад</li>
+        <li><strong>Twitter архив команды</strong> — найди старые посты с обещаниями</li>
+        <li><strong>Github releases</strong> — реальные релизы с датами</li>
+        <li><strong>Medium-блог проекта</strong> — обычно там подробные апдейты</li>
+      </ul>
+    </div>
+
+    <h2>Roadmap vs Реальность</h2>
+    <p>Никто не выполняет roadmap идеально. Это нормально — задержки бывают у всех (даже у Apple). Важно <strong>как</strong> команда реагирует на задержки:</p>
+
+    <div class="comparison">
+      <div class="comparison-col" style="border-color:#2E7D32;border-width:2px">
+        <h4>✅ Здоровая реакция</h4>
+        <p style="font-size:13px;color:var(--text-light)">«Мы откладываем релиз на 2 месяца — нашли уязвимость в коде, исправляем. Ваша безопасность важнее сроков.»</p>
+      </div>
+      <div class="comparison-col" style="border-color:#D63031;border-width:2px">
+        <h4>❌ Тревожная реакция</h4>
+        <p style="font-size:13px;color:var(--text-light)">Молчание. Удаление дат с roadmap. Бан в Discord тех, кто задаёт вопросы. Перенос «навсегда».</p>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz3">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">Проект 6 месяцев назад обещал mainnet в Q2, mobile-app в Q3, DAO в Q4. Сейчас Q4 — выполнен только mainnet с задержкой на 2 месяца. Mobile-app — «скоро». DAO — нет в roadmap. Что это значит?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Отлично — проект развивается, mainnet же запустили</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,true)">Тревожный сигнал — большая часть обещаний не выполнена, прозрачности нет</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Зависит от цены токена</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">Это норма для крипто-проектов</button>
+      <div class="quiz-feedback correct" id="quiz3-correct">Верно! Когда выполнено меньше половины обещанного и без объяснений — команда либо некомпетентна, либо потеряла мотивацию. Велика вероятность, что проект «умрёт» или превратится в зомби.</div>
+      <div class="quiz-feedback wrong" id="quiz3-wrong">Не совсем. Mainnet — это базовая функция. Если за 6 месяцев из 3 крупных целей выполнена только одна (с задержкой), а остальные «потерялись» — это признак проблем в команде или мотивации.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме урока</h3>
+      <ul>
+        <li>Roadmap — публичные обещания команды по развитию проекта</li>
+        <li>Хороший roadmap: конкретные цели, реальные сроки, история выполненного</li>
+        <li>Плохой roadmap: общие фразы, размытые сроки, чрезмерные обещания</li>
+        <li>Сравнивай roadmap год назад (через Wayback Machine) с тем, что сейчас сделано</li>
+        <li>Задержки бывают у всех — важна прозрачность и объяснения</li>
+        <li>Проект, который игнорирует свой же roadmap — мёртв или умирает</li>
+      </ul>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(2)">← Предыдущий</button><button class="btn btn-primary" onclick="goToLesson(4)">Далее: Оценка проекта →</button></div>
+  </div>
+</div>
+
+<!-- ===== LESSON 4: ОЦЕНКА ПРОЕКТА ===== -->
+<div class="lesson" id="lesson-4">
+  <div class="lesson-hero evaluation"><div class="module-tag">Модуль 09 · Урок 30</div><h1>Оценка проекта: чек-лист перед инвестицией</h1><div class="lesson-number">(30)</div></div>
+  <div class="lesson-body">
+
+    <h2>Соберём всё в систему</h2>
+    <p>Мы разобрали по отдельности: токеномику, команду, roadmap. Теперь — как использовать это вместе, чтобы за 30–60 минут оценить новый проект и принять решение: <strong>инвестировать или пройти мимо</strong>.</p>
+
+    <p>Этот чек-лист — твой главный инструмент. Если по большинству пунктов ответы «нет» — забудь про этот проект, даже если все вокруг кричат «to the moon». Если большинство «да» — это кандидат на инвестицию. И тогда уже подключаешь технический анализ для поиска точки входа.</p>
+
+    <h2>Полный чек-лист анализа проекта</h2>
+
+    <h3>Блок 1: Идея и продукт</h3>
+    <div class="checklist">
+      <h4>Какую проблему решает проект?</h4>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Можешь ли ты объяснить идею проекта одним предложением?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Решает ли проект реальную проблему, или это «решение в поисках проблемы»?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Есть ли работающий продукт (а не только обещания)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Сколько реальных пользователей? (TVL для DeFi, активные кошельки и т.д.)</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Чем проект отличается от конкурентов?</div></div>
+    </div>
+
+    <h3>Блок 2: Команда</h3>
+    <div class="checklist">
+      <h4>Кто стоит за проектом?</h4>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Команда публична (не анонимна)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Есть ли профили в LinkedIn? Совпадает ли информация с сайтом?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Какой опыт у основателей? Были ли предыдущие успешные проекты?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Есть ли доверенные инвесторы (a16z, Paradigm, Sequoia и т.д.)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Активна ли команда в публичном поле (AMA, Twitter, конференции)?</div></div>
+    </div>
+
+    <h3>Блок 3: Токеномика</h3>
+    <div class="checklist">
+      <h4>Как устроен токен?</h4>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Какой Max Supply / Circulating Supply / Total Supply?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Распределение: какой процент у команды и инвесторов?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Когда крупные unlock'и? (проверь tokenomist.ai или cryptorank.io)</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Есть ли реальная утилитарность токена (не просто «спекуляция»)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Дефляционный или инфляционный токен?</div></div>
+    </div>
+
+    <h3>Блок 4: Roadmap и развитие</h3>
+    <div class="checklist">
+      <h4>Что планируют и что уже сделали?</h4>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Есть ли публичный roadmap с конкретными датами?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Что было обещано год назад — выполнено?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Активен ли GitHub? Регулярные ли коммиты?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Прошёл ли проект независимый аудит безопасности?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Сколько средств в казначействе (treasury) для развития?</div></div>
+    </div>
+
+    <h3>Блок 5: Сообщество и рынок</h3>
+    <div class="checklist">
+      <h4>Кто вокруг проекта?</h4>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Активное сообщество в Discord/Telegram (не «мёртвое»)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">О чём говорят — о технологии или только «когда полетим»?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Какой Market Cap? Сравним с конкурентами?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">Какой объём торгов (ликвидность)?</div></div>
+      <div class="check-item"><div class="check-box"></div><div class="check-text">На каких биржах листинг? (CEX-листинги — позитивный сигнал)</div></div>
+    </div>
+
+    <h2>Где искать данные</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Источник</th><th>Что искать</th></tr></thead>
+      <tbody>
+        <tr><td class="label-cell" style="color:#1565C0;font-weight:700">CoinGecko / CoinMarketCap</td><td>Цена, Market Cap, объём, описание токена</td></tr>
+        <tr><td class="label-cell" style="color:#2E7D32;font-weight:700">DeFiLlama</td><td>TVL (для DeFi-проектов), сравнение с конкурентами</td></tr>
+        <tr><td class="label-cell" style="color:#F57C00;font-weight:700">Tokenomist.ai / Cryptorank</td><td>Расписание unlock, распределение токенов</td></tr>
+        <tr><td class="label-cell" style="color:#6A1B9A;font-weight:700">Messari / Galaxy Research</td><td>Глубокая аналитика проектов (часть платная)</td></tr>
+        <tr><td class="label-cell" style="color:#00897B;font-weight:700">Сайт проекта + Whitepaper</td><td>Документация, токеномика, команда</td></tr>
+        <tr><td class="label-cell" style="color:#D63031;font-weight:700">GitHub проекта</td><td>Активность кода, релизы, контрибьюторы</td></tr>
+        <tr><td class="label-cell" style="color:#5A5A5A;font-weight:700">Twitter / Discord / Telegram</td><td>Команда, сообщество, апдейты</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Принятие решения</h2>
+
+    <div class="info-block">
+      <h4>Простая система баллов:</h4>
+      <ul>
+        <li><strong>20+ из 25 «да»</strong> — серьёзный кандидат. Подключай технический анализ для входа</li>
+        <li><strong>15–19 «да»</strong> — интересно, но есть риски. Можно небольшую долю портфеля</li>
+        <li><strong>10–14 «да»</strong> — слишком много вопросов. Лучше пропустить</li>
+        <li><strong>Менее 10</strong> — это плохой проект. Нет, никакая «технология блокчейн» не оправдывает плохой фундаментал</li>
+      </ul>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-title">Главное правило</div>
+      <p>Если проект кричит «купи сейчас или опоздаешь!» — это уже само по себе минус 5 баллов. Хорошие проекты не торопятся. Они приходят надолго. Если ты пропустил «вход» — будут другие возможности. А вот если потерял деньги в скаме — их уже не вернёшь.</p>
+    </div>
+
+    <h2>Время на анализ</h2>
+    <p>Не пропускай этот этап даже если хочется купить «прямо сейчас». На анализ у опытного инвестора уходит 30–60 минут на проект. Это <strong>копейки</strong> по сравнению с потенциальной потерей всего вложения.</p>
+
+    <div class="analogy">
+      <div class="analogy-title">Аналогия</div>
+      <p>Покупка крипты без анализа — это как <strong>покупка квартиры по фотографии</strong>, не приехав посмотреть. Может, повезёт. А может, окажется, что фото — рендер, дома нет, а соседи — мафия. Анализ проекта — это твой «выезд на место». Не пропускай его.</p>
+    </div>
+
+    <div class="quiz" id="quiz4">
+      <h4>🧠 Проверь себя</h4>
+      <p class="quiz-question">Друг рассказывает о новом токене: «Команда — анонимы, но обещают x100. На сайте красивый дизайн, в Telegram 50K подписчиков. Аудита нет. Через неделю pre-sale.» Что делать?</p>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Купить — раз сообщество большое, что-то в этом есть</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Купить, но на маленькую сумму — рискнуть на х100</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,true)">Пройти мимо — это классический сценарий скама: анонимы + обещания + срочность</button>
+      <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">Подождать pre-sale, посмотреть, как пойдёт цена</button>
+      <div class="quiz-feedback correct" id="quiz4-correct">Верно! Все красные флаги налицо: анонимная команда, обещания конкретной доходности, отсутствие аудита, искусственная срочность («через неделю!»). 99% таких проектов — скам. 50K в Telegram легко покупаются за $200 на фрилансе.</div>
+      <div class="quiz-feedback wrong" id="quiz4-wrong">Опасный выбор! Анонимы + обещания x100 + отсутствие аудита + срочность — это идеальный шаблон скама. Подписчики покупаются массово. Лучше потерять «возможность», чем все деньги.</div>
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 Резюме урока</h3>
+      <ul>
+        <li>5 блоков анализа: идея, команда, токеномика, roadmap, сообщество</li>
+        <li>Используй чек-лист из 25 пунктов перед каждой инвестицией</li>
+        <li>Главные источники: CoinGecko, DeFiLlama, Tokenomist, GitHub</li>
+        <li>Анализ занимает 30–60 минут — это копейки по сравнению с риском потерять всё</li>
+        <li>Срочность («купи сейчас!») — главный признак скама</li>
+        <li>Если проект не проходит анализ — пропусти его. Будут другие</li>
+      </ul>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-title">🎉 Модуль 9 пройден!</div>
+      <p>Ты освоил фундаментальный анализ — главный инструмент для долгосрочных инвестиций. Теперь ты можешь отличить серьёзный проект от хайпа. В следующем модуле — DeFi: децентрализованные биржи, стейкинг, фарминг, лендинг и пулы ликвидности.</p>
+    </div>
+
+    <div class="lesson-nav"><button class="btn btn-secondary" onclick="goToLesson(3)">← Предыдущий</button><a href="crypto-course-module10.html" class="btn btn-primary">Модуль 10 →</a></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+let currentLesson=1;
+function goToLesson(n){
+  document.querySelectorAll('.lesson').forEach(l=>l.classList.remove('active'));
+  document.getElementById('lesson-'+n).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(item=>{
+    const ln=parseInt(item.dataset.lesson);item.classList.remove('active');
+    if(ln===n)item.classList.add('active');if(ln<n)item.classList.add('completed');
+  });
+  document.getElementById('progressFill').style.width=(n/4*100)+'%';
+  document.getElementById('progressText').textContent=n+'/4';
+  currentLesson=n;window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show');
+}
+function checkQuiz(id,btn,ok){
+  const q=document.getElementById(id);const opts=q.querySelectorAll('.quiz-option');
+  opts.forEach(o=>{o.style.pointerEvents='none';if(o!==btn)o.style.opacity='.5'});
+  if(ok){btn.classList.add('correct');document.getElementById(id+'-correct').classList.add('show')}
+  else{btn.classList.add('wrong');document.getElementById(id+'-wrong').classList.add('show');
+    setTimeout(()=>{opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')){o.classList.add('correct');o.style.opacity='1'}})},800)}
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')}
+</script>
+</body>
+</html>
